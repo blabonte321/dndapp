@@ -1,0 +1,14 @@
+{
+  "name": "Archibald",
+  "short_name": "Archibald",
+  "start_url": "/dndapp/archibald/archibald.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/dndapp/d20.png",
+      "sizes": "516x594",
+      "type": "image/png"
+    }
+  ]
+}

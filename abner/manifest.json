@@ -1,0 +1,14 @@
+{
+  "name": "Abner",
+  "short_name": "Abner",
+  "start_url": "/dndapp/abner/abner.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/dndapp/d20.png",
+      "sizes": "516x594",
+      "type": "image/png"
+    }
+  ]
+}

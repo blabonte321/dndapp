@@ -1,0 +1,6640 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,
+        initial-scale=1,
+        maximum-scale=1,
+        interactive-widget=resizes-content,
+        user-scalable=no">
+  <title>katiana</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #f4f4f4;
+  user-select: none;
+}
+
+div {
+  padding: 0;
+  margin: 0;
+  background-color: white;
+}
+
+div.tr {
+  background-color: transparent;
+}
+
+.col {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  background-color: transparent;
+}
+
+#combat .mnu span {
+  display: none;
+}
+
+.final_result {
+  display: flex;
+  width: 100%;
+  background-color: transparent;
+}
+
+.r_ac {
+  width: 56px;
+  margin-right: 4px;
+  background-color: transparent;
+}
+
+#ac {
+  font-size: 30px;
+  text-align: center;
+  margin-top: 1px;
+}
+
+#combat .line {
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+#distance {
+  text-align: right;
+  margin-left: auto;
+}
+
+#combat .quickselect {
+  margin-left: 10px;
+  margin-right: auto;
+}
+
+.boite {
+  border: 1px solid #ccc;
+  padding-top: 2px;
+  padding-bottom: 4px;
+}
+
+#ffac,
+#tac {
+  font-size: 14px;
+  margin-top: 3px;
+  text-align: center;
+}
+
+#ffac::before {
+  content: 'FF:';
+}
+
+#tac::before {
+  content: 'T:';
+}
+
+.r_atk {
+  flex: 1;
+  background-color: transparent;
+}
+
+.col>div {
+  flex: 1 1 49%;
+  /* grow, shrink, basis */
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.filler {
+  opacity: 0;
+}
+
+div.tgl {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin-bottom: 2px;
+  margin-right: 2px;
+}
+
+#attaques {
+  font-size: 12px;
+}
+
+[data-ltitle]::before {
+  content: attr(data-ltitle);
+  align-self: center;
+  font-style: italic;
+}
+
+[data-rtitle]::after {
+  content: attr(data-rtitle);
+  align-self: center;
+  font-style: italic;
+}
+
+.invalid[data-rtitle]::after,
+.invalid[data-ltitle]::before {
+  color: red;
+}
+
+.invalid[data-ltitle],
+.invalid[data-rtitle] {
+  border: 1px solid red;
+}
+
+div.mnu,
+div.result,
+div.line {
+  display: flex;
+  background-color: transparent;
+  align-items: center;
+}
+
+div.mnu>div,
+div.result>div {
+  flex: 1;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding: 2px;
+  margin: 2px;
+}
+
+div.mnu:has(> :nth-child(8)) {
+  flex-wrap: wrap;
+}
+
+div.mnu:has(> :nth-child(8))>div {
+  flex: 1 0 8%;
+  max-width: 12%;
+}
+
+#quickSelect .mnu {
+  flex-wrap: wrap;
+}
+
+#powerattack {
+  flex-wrap: wrap;
+}
+
+#powerattack div {
+  min-width: 10%;
+}
+
+
+.on {
+  background-color: #0078d4;
+  color: white;
+  border-color: white;
+}
+
+.nfo {
+  margin-top: 4px;
+  font-style: italic;
+  font-size: 12px;
+  background-color: transparent;
+}
+
+.tgl {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#combat span,
+#buffs span {
+  font-size: 8px;
+}
+
+table {
+  width: 100%;
+  border-radius: 4px;
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px solid #ccc;
+  text-align: center;
+  background-color: white;
+}
+
+.gear-icon::before {
+  content: "\2699";
+  font-size: 24px;
+  color: gray;
+}
+
+.topright {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  background-color: transparent;
+}
+
+.bottomleft {
+  position: fixed;
+  bottom: 5px;
+  left: 10px;
+  z-index: 999;
+}
+
+.topcenter {
+  position: absolute;
+  top: 0;
+  left: 60%;
+}
+
+#config {
+  display: none;
+}
+
+#edit_equip {
+  display: none;
+}
+
+.weapon_content {
+  height: calc(50vh - 80px);
+  height: calc(50dvh - 80px);
+  border-radius: 6px;
+  border: 1px solid gray;
+  min-height: 200px;
+}
+
+.configure_armes .pg.vis,
+.configure_equip .pg.vis {
+  display: none;
+}
+
+.configure_armes>div#edit_equip,
+.configure_equip>div#edit_equip {
+  display: block;
+  flex-direction: column;
+  align-items: stretch;
+  height: calc(100vh - 30px);
+  height: calc(100dvh - 30px);
+  width: 100%;
+  background-color: transparent;
+}
+
+.configure_equip>div#edit_equip div.mnu[data-key="manip"],
+.configure_equip>div#edit_equip .arm.nfo,
+.configure_equip>div#edit_equip div#mainPrincipale,
+.configure_equip>div#edit_equip div#mainSecondaire,
+.configure_equip>div#edit_equip div.weapon_content,
+.configure_armes>div#edit_equip #armor_other {
+  display: none;
+}
+
+.configure_armes {
+  margin-top: 15px;
+}
+
+@media only screen and (max-width: 767px) {
+  /* Mobile only */
+  body {
+    padding-bottom: 40vh;
+  }
+}
+
+body.configure_armes>div,
+body.configure_equip>div {
+  display: none;  
+}
+
+body.configure_armes #nom_html,
+body.configure_equip #nom_html,
+body.configure #nom_html {
+  display: none;
+}
+
+.button-row button {
+  flex: 0 0 auto;
+  /* do not grow or shrink, size to content */
+  min-width: unset;
+  /* remove min-width */
+  width: auto;
+  /* ensure width fits content */
+    flex: 0 0 auto;
+  min-width: unset;
+  width: auto;
+  padding: 4px 10px;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  background: #0078d4;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: none;
+  transition: background 0.2s;
+  cursor: pointer;
+  outline: none;
+}
+
+.button-row button:disabled {
+  opacity: 0.25;
+}
+
+.button-row {
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+  display: flex;
+  margin-bottom: 1px;
+  justify-content: space-between;
+}
+
+.top.mnu {
+  white-space: nowrap;
+}
+
+.pg {
+  display: none;
+}
+
+.configure_armes .pg.vis, 
+.configure_equip .pg.vis {
+  display: none;
+}
+
+.pg.vis {
+  display: block;
+}
+
+#edit_equip [data-vis]:not(.vis) {
+  display: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, .2);
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 3px;
+  align-items: center;
+  text-align: center;
+}
+
+.grid3 div {
+  font-size: 15px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  gap: 3px;
+  align-items: center;
+}
+
+.grid hr {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0; 
+}
+
+.section {
+  margin-bottom: 25px;
+}
+
+#stats input, #saves input, #HP input {
+  width: 30px;
+  padding: 4px;
+}
+
+.result {
+  font-weight: bold;
+  color: darkblue;
+}
+
+.results {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  line-height: 1.8em;
+}
+
+#fullscreen {
+  position: fixed;
+  font-weight: bold;
+  color: #0078d4;
+  text-align: center;
+  text-decoration: underline;
+  bottom: 0;
+  left: 0;
+  width: auto;
+}
+
+:root:fullscreen #fullscreen {
+  display: none;
+}
+
+#stats, #saves p, #HP p {
+  font-size: 12px;
+}
+
+#combat #weapons {
+  text-align: center;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  margin-right: 2px;
+  margin-left: 2px;   
+  background-color: white;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+div.mnu.armes>div {
+  margin-top: 0;
+}
+
+#equip ol {
+  padding-left: 25px;
+  margin: 0 auto;
+}
+
+#equip ul {
+  list-style-type: none;
+  padding-left: 10px;
+  margin: 0 auto;         
+}
+
+#equip li {
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 2px;
+}
+
+#equip ul li {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+#equip ol li span.g {
+  height: 40px;
+  display: grid;
+  align-items: center;
+  grid-template-columns: max-content 1fr; 
+}
+
+#equip ul li {
+  color: black
+}
+
+#equip ul li span {
+  opacity: 0.5;
+}
+
+#equip ul li.on span {
+  opacity: 1;
+}
+
+#equip ul li.on::after {
+  content: "ON";
+  background-color: #0078d4;
+  color: white;
+  border-color: white;
+}
+
+#equip ul li::after {
+  content: "OFF";
+  display: block; 
+  margin-left: auto;
+  font-size: 10px;
+  border-radius: 4px;
+  padding: 2px;
+  width: auto;
+  border-radius: 4px;
+  
+  border: 1px solid #ccc;
+  color: black;
+}
+
+#equip ul li:has(span.long:empty)::after {
+  display: none;
+}
+
+#equip ul li span.short:empty::before {
+  content: "Appuyez pour ajouter...";
+  font-style: italic;
+  color: #999;
+}
+
+
+div.pg {
+  background-color: transparent;
+}
+
+#equip_clear {
+  background-color: red;
+}
+
+#edit_equip .nfo {
+  margin-top: 2px;
+}
+
+#edit_equip .button-row {
+  margin-bottom: 6px;
+}
+
+#edit_equip div.mnu,
+#edit_equip div.line {
+  font-size: 12px;
+}
+
+#edit_equip div.line input,
+#edit_equip div.line select
+{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 2px;
+  margin-left: 2px;
+  flex: 1;
+}
+
+input::placeholder {
+  font-style: italic;
+}
+
+#edit_equip .tgl {
+  max-width: 30%;
+}
+
+.err_msg {
+  display: none;
+}
+
+.invalid .err_msg {
+  display: block;
+  color: red;
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
+}
+
+input:disabled, select:disabled {
+  border-radius: 3px;
+  border: 1px solid #767676;
+  opacity: 1;
+  color: inherit;
+  background-color: white;
+  cursor: default;
+}
+
+input, select {
+  border-width: 1px;
+}
+
+input:placeholder-shown ~ .clear-div {
+  opacity: 0.25;
+}
+
+.clear-div {
+  display: flex;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 4px;
+}
+
+dialog {
+  box-shadow: 0 0 150px rgba(255, 255, 255, 0.5);
+}
+
+dialog .actions {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+dialog::backdrop {
+   background: rgba(0, 0, 0, 0.6);
+}
+
+span.short {
+  white-space: nowrap;
+}
+
+span.long {
+  font-display: inline-block;
+  font-style: italic;
+  font-size: 10px;
+  margin-left: 10px;  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 20px;
+}
+
+span.long:empty::before,
+span.short:empty::before {
+    content: "\00a0";
+}
+
+#unarmed_tpl {
+  display: none;
+}
+
+#clearAll {
+  position: absolute;
+  left: 10px;
+  bottom: 5px;
+}
+
+#export {
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
+}
+
+#raw {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+body div [data-vu]:not(.vu) {
+  display: none;
+}
+
+[data-tpl] {
+  display: none;
+}
+
+.featparams {
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: auto;
+  margin-bottom: 5px;
+}
+
+.featparams input {
+  max-width: 60%;
+}
+
+#feats div.tgl {
+  margin-top: 5px;
+  max-width: 75%;
+  margin-left: 15px;
+}
+
+#feats div.tgl span {
+  display: none;
+}
+
+.collapsed {
+  max-height: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: none;
+}
+
+#version {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-size: 8px;  
+  background-color: transparent;
+}
+
+#HP .grid {
+  place-items: center; 
+}
+
+#currHP {
+  display: inline-block;
+  border: 2px solid black;
+  padding: 15px;
+  font-size: 50px;
+  min-width: 80px;
+  text-align: center;
+  align-items: start; 
+  margin-right: 5px;
+}
+
+#blessures {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 20px;
+  row-gap: 4px;
+  font-size: 16px;
+  color: red;
+  align-items: center;
+  place-items: center;
+}
+
+#blessures:empty::before {
+  content: '(aucune blessure)';
+  color: gray;
+}
+
+#hpActuel {
+  display: grid;
+  row-gap: 8px;
+  padding-top: 20px;
+  font-size: 15px;
+  grid-template-columns: 1fr auto;
+  place-items: center;
+  align-items: start;
+}
+
+#hpFooter {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  padding: 20px;
+  font-size: 20px;
+}
+
+dialog.bobo .bobo {
+  display: none;
+}
+
+dialog.heal .bobo::before {
+  content: 'blessure: ';
+  color: black;
+}
+
+#hpFooter .bobo {
+  padding-top: 3px;
+}
+
+#hpFooter div {
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+#fullHeal {
+  text-align: center;  
+  color: blue;
+  padding-bottom: 2px;
+}
+
+#blessures span {
+  display: inline-block;
+}
+
+.heal {
+  color: blue;
+  border-color: blue;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 6px;
+  padding-bottom: 2px;
+}
+
+#blessures .heal {
+  border: 1px solid;
+}
+
+#blessures .bobo {
+  position: relative;
+}
+
+.bobo {
+  color: red;
+  border-color: red;
+  padding-right: 5px;
+
+  padding-bottom: 2px;
+}
+
+dialog[open] {
+  margin-top: clamp(0px, 2vh, 200px);
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: auto; 
+}
+
+#nom_html {
+  width: 100%;
+  height: 16px;
+  min-height: 16px;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+input.plus {
+  width: 20px;
+  max-width: 20px;
+}
+
+#armor_other .line .mnu {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+body * {
+  scroll-margin-top: 100px;
+}
+
+#sneak_dice {
+  margin-bottom: 8px;
+}
+
+#size {
+  grid-column: span 3;
+}
+
+#size div span {
+  display: none;
+}
+
+[id$="Tot"],
+[id$="Mod"],
+.special_save[data-id="tot"] {
+  font-weight: bold;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.special_save[data-id=name] {  
+  text-align: right;
+}
+
+.special_save {
+  font-style: italic;
+}
+
+div[id$="Buff"]:not(:empty)::after,
+div[data-id="buff"]:not(:empty)::after,
+.grid3 div:not(:empty)::after,
+#attaques table tr td:nth-last-child(-n+2)::after,
+.boite div::after,
+.explain::after
+ {  
+  content: "?";
+  position: relative;
+  top: -4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background-color: #0078d4;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: bold;
+  opacity: 0.6;
+}
+
+#attaques table tr.troll td:nth-last-child(-n+2)::after {
+  display: none;
+}
+
+#attaques table tr td:nth-last-child(-n+2)::after,
+.boite div::after {
+  top: -2px;  
+  width: 11px;
+  height: 11px;
+  font-size: 9px;
+  margin-left: 2px;
+  padding-right: 0.5px;
+  padding-top: 1px;
+}
+
+.boite div::after {
+  top: -3px;
+}
+
+.boite div#ac::after {
+  top: -15px;
+}
+
+#attaques table tr td.out_of_range::after {
+  display: none;
+}
+
+div[id$="Buff"],
+div[data-id="buff"],
+#hpStats {
+  font-size: 1.3em;
+}
+
+#explicationDialog {
+  padding: 0;
+  white-space: nowrap;
+  border: 1px solid black;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+#explicationDialog button {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  width: 60px;
+  margin-bottom: 1px;
+  margin-top: 1px;
+}
+
+#explicationDialog .hdr,
+#explicationDialog .itm {
+  display: flex;
+  justify-content: space-between;
+}
+
+#explicationDialog span {
+  margin-right: 3px;
+  margin-left: 3px;
+}
+
+#explicationDialog .part {
+  margin-bottom: 1px;
+}
+
+#explicationDialog .itm {
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+#explicationDialog .strk {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+#explicationDialog .part.tpl {
+  display: none;
+}
+
+#explicationDialog .ttl {
+  font-size: 1.1em; 
+  white-space: pre;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+#explicationDialog .hdr {
+  background-color: gray;
+  color: white; 
+}
+
+td.out_of_range {
+  color: red;
+}
+
+#boboDialog {
+  text-align: center;
+  padding: 10px;
+  font-size: 15px;
+  border-width: 1px;
+  border-radius: 5px;
+  line-height: 2;
+}
+
+#boboDialog input {
+  font-size: 15px;
+  width: 30px;
+}
+
+#boboDialog button {
+  font-size: 15px;
+} 
+
+dialog#boboDialog .actions {
+  padding-top: 10px;
+  border-top: 1px solid;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#dicedialog {
+  background-color: #f4f4f4;
+  text-align: center;
+  width: 75%;
+}
+
+#dicedialog .mnu div:not(.on) {
+  background-color: white;
+}  
+
+#dicedialog div:not(.on) {
+  background-color: #f4f4f4;
+}
+
+#dice_tpl {
+  display: none;
+}
+
+#dicedialog .left {
+  text-align: left;
+}
+
+#boboDialog .titre {
+  line-height: 1;  
+  border-bottom: 1px solid;
+  padding-bottom: 10px;
+  font-size: 1.4em;
+}
+
+.on[data-dices] {
+  position: relative;
+}
+
+.on[data-dices]::after {
+  content: attr(data-dices);
+  position: absolute;
+  top: 0px;
+  right: 3px;
+}
+
+#boosts span {
+  display: none;
+} 
+
+body.edit_buffs .top.mnu {
+  position: relative;
+}
+
+body.edit_buffs .top.mnu div {
+  visibility: hidden;
+}
+
+body.edit_buffs .top.mnu::before {
+  content: 'Mode: édition / ajout de buff(s)';
+  position: absolute;
+  display: flex;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  text-align: center;
+  font-size: 14px;
+  padding-top: 5px;
+  border-radius: 4px;
+  border: 1px solid black;
+  padding: 2px;
+  justify-content: center;
+  align-items: center;
+  background: black;
+  color: white;
+  opacity: 0.5;
+}
+
+body.edit_buffs #boosts>div {
+  position: relative;
+  background-color: white;
+  color: black;
+}
+
+body.edit_buffs #boosts>div::after {
+  position: absolute;
+  right: 2px;
+  top: 0;
+  content: "\2699";
+  color: black;
+}
+
+#add_buff {
+  display: none;
+}
+
+body.edit_buffs #add_buff {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding-right: 8px;
+  padding-left: 8px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: white;
+  color: black;
+  margin-top: 10px;
+}
+
+.gear-icon {
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body.edit_buffs .gear-icon.bottomleft {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+}
+
+body.edit_buffs .gear-icon.bottomleft::after {
+  content: 'Retour au mode Normal';
+  font-size: 16px;
+  padding-right: 10px;
+  padding-left: 3px;
+}
+
+.configure_buff div.mnu[data-key="typEquip"] {
+  display: none;
+}
+
+.hidden_option {
+  display: none;
+}
+
+.configure_buff .effects [data-key="b1"] > :first-child {
+  visibility: hidden;
+}
+
+#quickSelect {
+  text-align: center;
+  max-width: 200px;
+}
+
+#quickSelect .titre {
+  margin-bottom: 10px;
+}
+
+#quickSelect .mnu div {
+  min-width: 30px;
+  font-size: 20px;
+}
+
+#HP {
+  padding-top: 5px;
+}
+
+m {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+html.pc body {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100vh;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+html.pc body .bottomleft {
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  z-index: 999;
+}
+
+html.pc {
+  background-color: gray;
+}
+
+html.pc dialog {
+  max-width: 400px;
+}
+
+#savedData {
+  display: none;
+}
+
+#rawData[open] {
+  display: flex;
+  flex-direction: column;
+  
+  width: 905vw;
+  height: 90vh;
+  height: 90dvh;
+}
+
+#txtAreaRaw {
+  flex: 1;
+  font-size: 10px;
+  white-space: pre;
+  overflow-x: auto;
+  overflow-y: auto; 
+}
+
+#rawData form {
+  margin-top: 10px;
+  justify-content: space-between;  
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+  <pre id="savedData" data-saveid="1793919650076">PAGE stats
+lvl: 8
+bab: 7
+str: 16
+strTmp: 0
+dex: 13
+dexTmp: 0
+con: 14
+conTmp: 0
+int: 16
+intTmp: 0
+wis: 11
+wisTmp: 0
+cha: 14
+chaTmp: 0
+miscTch: 0
+miscDmg: 0
+size:Medium
+
+PAGE feats
+weaponFocus1: Greatsword
+weaponFocus2: 
+weaponFocus3: 
+weaponFocus4: 
+feats:Combat Expertise,
+  Power Attack,
+  Leap Attack,
+  Weapon Focus,
+  Luck of heroes,
+  Duskblade Channeling
+sneak_dice:1d6
+
+PAGE equip
+g1: (2h/m/Greatsword/2d6/+1)
+g2: (1h/m/Heavy-Aspergillum/1d8),
+   (1h/s/Medium-Shield/+1sac)
+g3: (1h/m/Dagger/1d4/+1),
+   (1h/s/Medium-Shield/+1sac)
+e1: (armor/Elven-Chainshirt/+4aac/maxdex=+4/+2eac) ON
+e2: (equip/Dastana/+1pac) ON
+e3: (equip/Ring of Protection +1/+1fac) ON
+e4: (equip/Vest of Resistance +1/+1rsav) ON
+
+PAGE saves
+saveTmp: 0
+fort: 7
+fortTmp: 0
+reflex: 6
+reflexTmp: 0
+will: 7
+willTmp: 0
+
+PAGE HP
+hp: 48
+hpTmp: 0
+
+
+PAGE buffs
+boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
+  Inspire Courage 2(+2mtch/+2mdmg/+2mwill_Fear_Charm),
+  Inspire Courage 1(+1mtch/+1mdmg/+1mwill_Fear_Charm),
+  Shield(+4sac),
+  Bull's Strength(+4estr),
+  Cat's Grace(+4edex),
+  Bear's Endurance(+4econ),
+  Eagle's Splendor(+4echa),
+  Owl's Wisdom(+4ewis),
+  Fox's Cunning(+4eint),
+  Elation(+2mstr/+2mdex),
+  Enlarge(+2zstr/-2zdex/-1ztch/+1zsiz),
+  Haste(+1utch/+1dac/+1uatk),
+  Heroism(+2mtch/+2msav),
+  Shield of Faith(+2fac),
+  Shield Other(+1fac/+1rsav),
+  Barkskin(+2enac),
+  Bless(+1mtch/+1mwill_Fear),
+  Prot From Evil(+2fac/+2rsav),
+  Prayer(+1lsav/+1ltch/+1ldmg),
+  Magic Vest. Armor lv5(+1eac),
+  Magic Vest. Shield lv5(+1esac),
+  Magic Vest. Armor lv8(+2eac),
+  Magic Vest. Shield lv8(+2esac),
+  Aid lv7(+1mtch/+1mwill_Fear/hp=+1d8+7),
+  Resistance(+1rsav),
+  Magic Weapon(+1eweap),
+  Mage Armor(+4aac),
+  Greater Mage Armor(+6aac),
+  Remove Fear(+4mwill_Fear),
+  Divine Power(bab=lvl/+6estr/hp=+1*lvl),
+  Divine Favor lv7(+2ltch/+2ldmg),
+  Troll Shape(basestr=23/basedex=14/basecon=23/baseint=6/basewis=9/basecha=6/+5nac/hp=+30/basesize=1/-1zac),
+  Polymorph Troll(basestr=23/basedex=14/basecon=23/+5nac/basesize=1/-1zac),
+  True Strike(+20itch)</pre>
+  <dialog id="confirmDialog">
+    <form method="dialog">
+      <p id="confirmDialogMsg">Êtes vous certain d'effacer?</p>
+      <div class="actions">
+        <button type="submit" value="non">Non</button>
+        <button type="submit" value="oui">Oui</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="rawData">
+    <textarea id="txtAreaRaw" readonly=""></textarea>
+    <form method="dialog">
+      <button>Close</button>
+      &nbsp;
+      <button type="button" onclick="pressePapier(this)">
+        Copier au Presse-Papier
+      </button>
+    </form>
+  </dialog>
+  <dialog id="exportDialog" class="topdialog">
+    <form method="dialog">
+      <p>
+        Cette fonctionalité permet de sauvegarder et re-copier
+        la page en entier dans son état actuel pour soit la réutiliser,
+        soit la partager avec d'autres personnes.
+      </p>
+      <label for="nom_export">Entrez le nom pour l'export HTML:</label>
+      <input value="dnd" id="nom_export" required="" pattern="[A-Za-z0-9\-_]+" maxlength="30">
+      <p>
+        (Max 30 charactères, lettres chiffres et - _ seulement.)
+      </p>
+      <div class="actions">
+        <button type="submit" value="export">Export</button>
+        <button type="submit" formnovalidate="" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="explicationDialog">
+    <form method="dialog">
+      <div class="ttl"></div>
+      <div class="part tpl">
+        <div class="hdr"><span></span><span></span></div>
+        <div class="itm"><span></span><span></span></div>
+      </div>
+      <div class="part">
+        <div class="hdr"><span>Total</span><span class="tot"></span></div>
+      </div>  
+      <button type="submit" value="OK">OK</button>
+    </form>
+  </dialog>
+  <dialog id="boboDialog">
+    <form method="dialog">
+      <div class="titre"></div>
+      <div class="bobo"></div>
+      <label for="bobo_hp">Combien de HP ?:</label>
+      <input id="bobo_hp" inputmode="numeric" required="" pattern="[0-9]+" maxlength="3" value="0">
+      <div class="actions">
+        <button type="submit" value="ok">Ok</button>
+        <button type="submit" formnovalidate="" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+    <dialog id="dicedialog">
+    <form method="dialog">
+      <div>🎲 Lancé de dé(s) requis 🎲</div>
+      <h3 id="dice_buff_ttl"></h3>      
+      <div id="dice_tpl">
+        <div class="left"></div>
+        <div class="mnu" data-onswap="validateDice"></div>
+      </div>
+      <br>
+      <div class="actions">
+        <button type="submit" disabled="" value="ok">Ok</button>
+        <button type="submit" formnovalidate="" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="quickSelect">
+    <div class="titre"></div>
+    <div class="mnu" data-onswap="qs"></div>
+  </dialog>
+  <div id="edit_equip">    
+    <div id="title_edit_equip" class="tr"></div>
+    <div class="button-row tr">
+      <button id="equip_ok">OK</button>
+      <button id="equip_clear">🗑 Effacer</button>
+      <button id="equip_cancel">Annuler</button>
+    </div>
+    <div class="mnu" data-key="manip" data-onswap="swapMain" data-ltitle="Manipulation:">
+      <div class="on" id="manip_1h">✋1 Main</div>
+      <div id="manip_2h">🤲2 Mains</div>
+    </div>
+    <div class="arm nfo mp">Main Principale</div>
+    <div id="mainPrincipale" class="mp arm weapon_content tr validation_group">
+      <div class="mnu" id="typ1" data-key="typ1" data-onswap="swapArmTyp">
+        <div class="on">N/A</div>
+        <div id="typ_m">🗡Melee</div>
+        <div id="typ_r">🏹Range</div>
+        <div id="typ_t">🎯Throw</div>
+      </div>
+      <datalist id="listeMainPrincipale" data-filter=""></datalist>
+      <div class="line" data-ltitle="Nom:" data-vis="typ1!~N/A">
+        <input disabled="" type="search" name="nom1" data-key="nom1" data-touch="edit" maxlength="30" list="listeMainPrincipale" data-autocomplete="autoMainPrincipale" pattern="[A-Za-zÀ-ÿ\-]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)" placeholder="Appuyez pour choisir ou entrer...">
+        <div class="clear-div">Clear</div>
+      </div>
+      <div class="mnu" data-key="qual1" data-ltitle="Qualité:" data-vis="nom1">
+        <div>Normale</div>
+        <div id="qual_masterwork">⭐ Masterwork</div>
+        <div id="qual_magique">✨ Magique</div>
+      </div>
+      <div class="mnu" data-key="dice1" data-ltitle="Dé:" data-vis="nom1">
+        <div>1d3</div>
+        <div>1d4</div>
+        <div>1d6</div>
+        <div>1d8</div>
+        <div>1d10</div>
+        <div>1d12</div>
+        <div>2d4</div>
+        <div>2d6</div>
+      </div>
+      <div class="mnu" data-key="bonus1" data-ltitle="Bonus:" data-vis="qual1~Magique">
+        <div>+1</div>
+        <div>+2</div>
+        <div>+3</div>
+        <div>+4</div>
+        <div>+5</div>
+      </div>
+      <div class="mnu" data-key="comp1" data-ltitle="Composite:" data-vis="nom1~Composite">
+        <div>+1</div>
+        <div>+2</div>
+        <div>+3</div>
+        <div>+4</div>
+        <div>+5</div>
+      </div>
+      <div class="mnu" data-key="incr1" data-ltitle="Incr.(ft.):" data-vis="nom1&amp;typ1!~Melee">
+        <div>10</div>
+        <div>20</div>
+        <div>30</div>
+        <div>50</div>
+        <div>60</div>
+        <div>70</div>
+        <div>80</div>
+        <div>100</div>
+        <div>110</div>
+        <div>120</div>
+      </div>
+      <div class="mnu optionel" data-ltitle="Autre Bonus:" data-vis="typ1~Melee&amp;qual1~Magique">
+        <div class="tgl" data-key="defending1">Defending</div>
+      </div>
+      <div class="tr line optionel" data-ltitle="Domage Spéciaux:" data-vis="qual1~Magique">
+        <input name="specDmg1" data-key="specDmg1" pattern="[0-9a-zA-Z \-\+\*=_🗲]*">
+      </div>
+      <br>
+      <div class="err_msg">
+        Veuillez entrer/vérifier les champs en rouge.
+      </div>
+    </div>
+
+    <div class="arm nfo" data-vis="manip~'1 Main'">Main Secondaire</div>
+    <div id="mainSecondaire" class="arm weapon_content validation_group tr" data-vis="manip~'1 Main'">
+      <div class="mnu" id="typ2" data-key="typ2" data-onswap="swapArmTyp">
+        <div class="on">N/A</div>
+        <div id="typ_s">🛡️Shield</div>
+        <div>🗡Melee</div>
+        <div>🏹Range</div>
+        <div>🎯Throw</div>
+      </div>
+      <datalist id="listeMainSecondaire" data-filter=""></datalist>
+      <div class="line" data-ltitle="Nom:" data-vis="typ2!~N/A">
+        <input disabled="" type="text" data-key="nom2" data-touch="edit" data-on_edit_collapse=".mp" maxlength="30" list="listeMainSecondaire" data-autocomplete="autoMainSecondaire" pattern="[A-Za-zÀ-ÿ\-]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)" placeholder="Appuyez pour choisir ou entrer...">
+        <div class="clear-div">Clear</div>
+      </div>
+      <div class="mnu" data-key="qual2" data-ltitle="Qualité:" data-vis="nom2">
+        <div>Normale</div>
+        <div>⭐ Masterwork</div>
+        <div>✨ Magique</div>
+      </div>
+      <div class="mnu" data-key="shield2" data-ltitle="Armure (Shield):" data-vis="nom2&amp;typ2~Shield">
+        <div>+1</div>
+        <div>+2</div>
+        <div>+4</div>
+      </div>
+      <div class="mnu" data-key="maxdex2" data-ltitle="Max Dex.:" data-vis="nom2&amp;typ2~Shield">
+        <div>N/A</div>
+        <div>+1</div>
+        <div>+2</div>
+        <div>+3</div>
+        <div>+4</div>
+      </div>
+      <div class="mnu" data-key="malusTch2" data-ltitle="Malus Toucher:" data-vis="nom2&amp;typ2~Shield">
+        <div>N/A</div>
+        <div>-2</div>
+      </div>
+
+      <div class="mnu" data-key="dice2" data-ltitle="Dé:" data-vis="nom2&amp;typ2!~Shield">
+        <div>1d3</div>
+        <div>1d4</div>
+        <div>1d6</div>
+        <div>1d8</div>
+        <div>1d10</div>
+        <div>1d12</div>
+        <div>2d4</div>
+        <div>2d6</div>
+      </div>
+      <div class="mnu" data-key="bonus2" data-ltitle="Bonus:" data-vis="qual2~Magique">
+        <div>+1</div>
+        <div>+2</div>
+        <div>+3</div>
+        <div>+4</div>
+        <div>+5</div>
+      </div>
+      <div class="mnu" data-key="incr2" data-ltitle="Incr.(ft.):" data-vis="nom2&amp;typ2!~Melee&amp;typ2!~Shield">
+        <div>10</div>
+        <div>20</div>
+        <div>30</div>
+        <div>50</div>
+        <div>60</div>
+        <div>70</div>
+        <div>80</div>
+        <div>100</div>
+        <div>110</div>
+        <div>120</div>
+      </div>
+      <div class="mnu optionel" data-ltitle="Autre Bonus:" data-vis="typ2~Melee&amp;qual2~Magique">
+        <div class="tgl" data-key="defending2">Defending</div>
+      </div>
+      <br>
+      <div class="err_msg">
+        Veuillez entrer les champs indiqués en rouge.
+      </div>
+    </div>
+
+    <div id="armor_other">
+      <div class="mnu" data-key="typEquip" data-onswap="swapTypEquip" data-ltitle="Type:">
+        <div class="on" id="armure">🦺Armure</div>
+        <div id="autre">💍Autre</div>
+        <div class="hidden_option">buff</div>
+      </div>
+      <div class="validation_group">
+        <datalist id="listeEquip"></datalist>
+        <div class="line" data-ltitle="Nom:">
+          <input disabled="" type="text" data-key="nom_e" data-touch="edit" name="nom_e" maxlength="40" list="listeEquip" data-autocomplete="autoEquip" pattern="[0-9A-Za-zÀ-ÿ\-\+ _]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)" placeholder="Appuyez pour choisir ou entrer...">
+          <div class="clear-div">Clear</div>
+        </div>
+        <div class="mnu" data-key="qual" data-ltitle="Qualité:" data-vis="nom_e&amp;typEquip~Armure">
+          <div>Normale</div>
+          <div>✨ Magique</div>
+        </div>
+        <div class="mnu" data-key="armor" data-ltitle="Armure:" data-vis="nom_e&amp;typEquip~Armure">
+          <div>+1</div>
+          <div>+2</div>
+          <div>+3</div>
+          <div>+4</div>
+          <div>+5</div>
+          <div>+6</div>
+          <div>+7</div>
+          <div>+8</div>
+        </div>
+        <div class="mnu" data-key="maxdex" data-ltitle="Max Dex.:" data-vis="nom_e&amp;typEquip~Armure">
+          <div>0</div>
+          <div>+1</div>
+          <div>+2</div>
+          <div>+3</div>
+          <div>+4</div>
+          <div>+5</div>
+          <div>+6</div>
+          <div>+7</div>
+          <div>+8</div>
+        </div>
+        <div class="mnu" data-key="bonusArmor" data-ltitle="Bonus:" data-vis="qual~Magique">
+          <div>+1</div>
+          <div>+2</div>
+          <div>+3</div>
+          <div>+4</div>
+          <div>+5</div>
+        </div>
+        <div class="effects" data-vis="nom_e">
+          <div class="nfo" data-vis="qual~Magique|typEquip~Autre">
+            Bonus Magiques
+          </div>
+
+          <template data-tok="TOK" data-from="1" data-to="12">          
+            <div class="line" data-vis="qual~Magique|typEquip~Autre">
+              <div class="mnu" data-key="bTOK">
+                <div class="on">n/a</div>
+                <div>+/-</div>
+                <div>f(x)</div>
+              </div>
+              <input data-ltitle="" name="plusTOK" class="plus" data-key="plusTOK" inputmode="numeric" data-vis="bTOK~+/-" placeholder="+X" onblur="addPlus(this)" pattern="[\-\+]?[0-9]*" type="text">
+              <select name="typbTOK" data-ltitle="" data-key="typbTOK" data-vis="bTOK~+/-">
+                <option value="" selected="" hidden="">type...</option>
+                <option hidden="" disabled="" data-tpl="eachBonus" value="TPL_VAL">TPL_VAL</option>
+              </select>
+              <select name="statTOK" data-ltitle="" data-key="statTOK" data-vis="bTOK~+/-">
+                <option value="" selected="" hidden="">stat...</option>
+                <option hidden="" disabled="" data-tpl="eachTarget" value="TPL_VAL">TPL_VAL</option>
+              </select>
+              <input data-ltitle="" name="fnTOK" type="text" data-key="fnTOK" data-vis="bTOK~f(x)" pattern="[0-9a-zA-Z \-\+\*=_]*" placeholder="fonction spéciale...">
+            </div>
+          </template>
+        </div>
+
+
+        <div class="err_msg">
+          Veuillez entrer les champs indiqués en rouge.
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="tr" id="nom_html">katiana</div>
+
+  <div class="top mnu" data-onswap="swapPage">
+    <div class="on">Combat</div>
+    <div>Stats</div>
+    <div>Feats</div>
+    <div>Equip</div>
+    <div>Saves</div>
+    <div>HP</div>
+    <div id="buff_menu">Buffs (0)</div>    
+  </div>
+  <div class="pg" id="stats">
+    <p>
+      Note: Les cases <b><i>Tmp+-</i></b> et ne doivent être utilisées que pour des modifications spéciales non-supportées.      
+      Il est préférable d'utiliser les boutons dans l'onglet <b><i>Buffs</i></b> en priorité.
+    </p>
+    <div class="grid">
+      <b></b>
+      <b>Niveau</b>
+      <b>BAB</b>
+      <b>Taille (sans buff)</b>
+      <b></b>
+      <b></b>
+
+      Perso
+      <input id="lvl" maxlength="2" type="number" value="1" min="1" max="20">
+      <input id="bab" maxlength="2" type="number" value="1" min="1" max="20">
+      <div id="size" class="mnu">
+        <div class="on">Medium<span>(basesize=0)</span></div>
+        <div>Small<span>(basesize=-1)</span></div>
+      </div>
+    </div>
+    <br>
+    <div class="grid">
+      <b></b>
+      <b>Total</b>
+      <b>Base</b>
+      <b>Tmp+-</b>
+      <b>Buff</b>
+      <b>Mod</b>
+
+      Force
+      <div id="strTot">10</div>
+      <div>
+        <input id="str" maxlength="2" step="1" min="1" max="50" type="number" value="10">
+        <span id="strP"></span>
+      </div>
+      <input id="strTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="strBuff">+0</div>
+      <div class="result" id="strMod">+0</div>
+
+      Dextérité
+      <div id="dexTot">10</div>
+      <div>
+        <input id="dex" maxlength="2" step="1" min="1" max="50" type="number" value="10">
+        <span id="dexP"></span>
+      </div>
+      <input id="dexTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="dexBuff">+0</div>
+      <div class="result" id="dexMod">+0</div>
+
+      Constitution
+      <div id="conTot">10</div>
+      <div>
+        <input id="con" maxlength="2" step="1" min="1" max="50" type="number" value="10">
+        <span id="conP"></span>
+      </div>
+      <input id="conTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="conBuff">+0</div>
+      <div class="result" id="conMod">+0</div>
+
+      Intelligence
+      <div id="intTot">10</div>
+      <div>
+        <input id="int" maxlength="2" step="1" min="1" max="50" type="number" value="10">
+        <span id="intP"></span>
+      </div>
+      <input id="intTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="intBuff">+0</div>
+      <div class="result" id="intMod">+0</div>
+
+      Sagesse
+      <div id="wisTot">10</div>
+      <div>
+        <input id="wis" maxlength="2" type="number" step="1" min="1" max="50" value="10">
+        <span id="wisP"></span>
+      </div>
+      <input id="wisTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="wisBuff">+0</div>
+      <div class="result" id="wisMod">+0</div>
+
+      Charisme
+      <div id="chaTot">10</div>
+      <div>
+        <input id="cha" maxlength="2" type="number" step="1" min="1" max="50" value="10">
+        <span id="chaP"></span>
+      </div>
+      <input id="chaTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="chaBuff">+0</div>
+      <div class="result" id="chaMod">+0</div>
+
+    </div>
+    <br>
+    <div class="grid">
+      <b></b>
+      <b>Toucher</b>
+      <b>Dégats</b>
+      <b></b>
+      <b></b>
+      <b></b>
+
+      Tmp+-
+      <input id="miscTch" type="number" value="0">
+      <input id="miscDmg" type="number" value="0">
+      <b></b>
+      <b></b>
+      <b></b>
+    </div>
+
+    <br>
+    <div class="grid3">
+      <b>Grapple</b>
+      <b>Melee</b>
+      <b>Range</b>
+
+      <div id="grapple">+7</div>
+      <div id="melee">+16/11/6/1</div>
+      <div id="range">+16/11/6/1</div>
+    </div>
+
+    <br>
+    <div style="display: none">
+      <div>Melee Attack: <span id="meleeTch"></span></div>
+      <div>Ranged Attack: <span id="rangedTch"></span></div>
+      <div>One-Hand Damage Bonus: <span id="oneHandDmg"></span></div>
+      <div>Two-Hand Damage Bonus: <span id="twoHandDmg"></span></div>
+      <div>Off-Hand Damage Bonus: <span id="offHandDmg"></span></div>
+      <div>Thrown Weapon Damage Bonus: <span id="thrownDmg"></span></div>
+      <div>Composite Bow Damage Bonus: <span id="compBowDmg"></span></div>
+    </div>
+    <button id="clearAll" onclick="confirmClearAll()">Clear All</button>
+    <button id="raw" onclick="showRawData()">View Raw Data</button>
+    <button id="export" onclick="exportClick()">Export</button>
+  </div>
+
+  <div class="pg vis" id="combat">
+
+    <div class="final_result">
+      <div class="r_ac">
+        <div class="nfo">Armure</div>
+        <div class="boite">
+          <div id="ac"></div>
+          <div id="ffac"></div>
+          <div id="tac"></div>
+        </div>
+      </div>
+      <div class="r_atk">
+        <div class="nfo">Attaque(s)  (arme, toucher, dégats)</div>
+        <div class="result_atk" id="attaques">
+          <table></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="nfo">Arme(s)(/Bouclier)</div>
+    <div id="weapons">
+      ✋🗡Unarmed
+    </div>
+    <div class="mnu armes" id="groupeArmes" data-onswap="selectGroupeArmes">
+      <div class="on">Groupe 1</div>
+      <div>Groupe 2</div>
+      <div>Groupe 3</div>
+      <div>Groupe 4</div>
+      <div>Groupe 5</div>
+    </div>
+
+    <div class="nfo">Positionnement</div>
+    <div id="position" class="mnu">
+      <div class="on">Normal</div>
+      <div>Flank/Hide<span>(+2utch/sneak=1)</span></div>
+    </div>
+
+    <div data-vu="armedejet" class="nfo">Distance de la cible</div>
+    <div data-vu="armedejet" class="line">
+      <input id="distance" step="1" min="1" max="9999" type="number" value="5">
+      ft.
+      <button class="quickselect" data-from="1" data-to="50" data-inc="5" data-ttl="Distance (nb de cases de 5ft)">sélection rapide</button>
+    </div>
+
+    <div class="nfo">Type Attaque</div>
+    <div class="mnu" data-onswap="swapAtk" id="typeAttaque">
+      <div class="on" data-tatk="fr">Full Round</div>
+      <div data-tatk="std">Standard</div>
+      <div data-vu="armedemelee" data-tatk="charge">Charge<span>(+2utch/-2uac)</span></div>
+      <div data-vu="offhandparry" data-tatk="offhandparry">Off Hand Parry<span>(+2dac)</span></div>
+      <div data-vu="leapattack" data-tatk="leapattack">Leap Attack<span>(+2utch/-2uac)</span></div>
+    </div>
+
+    <div class="tr" data-vu="armedemelee">
+      <div data-vu="feat powerattack" class="nfo">Power Attack</div>
+      <div data-vu="feat powerattack" id="powerattack" class="mnu">
+        <div class="on">&nbsp;0&nbsp;</div>
+        <div data-tpl="eachBAB" data-lbl="Power Attack">
+          TPL_VAL
+          <span>(pwa=+TPL_VAL/-TPL_VALutch)</span>
+        </div>
+      </div>
+
+      <div data-vu="feat combatexpertise" class="nfo">Combat Expertise</div>
+      <div data-vu="feat combatexpertise" id="combatexpertise" class="mnu">
+        <div class="on">&nbsp;0&nbsp;</div>
+        <div data-tpl="eachBABmax5" data-lbl="Combat Expertise">
+          TPL_VAL<span>(+TPL_VALdac/-TPL_VALutch)</span>
+        </div>
+      </div>
+    </div>
+    
+    <div data-vu="rumpy" class="nfo">Rumpy Specials</div>
+    <div data-vu="rumpy" class="mnu" id="rumpySpecials">
+      <div class="tgl holy">Holy vs Evil</div>
+      <div data-vu="notfr" class="tgl smite">Smite Evil</div>
+    </div>
+
+    <div data-vu="paladinspecials" class="nfo">Paladin Specials</div>
+    <div data-vu="paladinspecials" class="mnu">
+      <div class="tgl smite">Smite Evil</div>
+    </div>
+
+    <div data-vu="duskblade" class="nfo">Duskblade</div>
+    <div data-vu="duskblade" class="mnu offable">
+      <div class="shocking">Shocking⚡</div>
+      <div class="duskheal">Healing⛨</div>
+      <div class="chill">Chill❄️</div>
+    </div>
+    <div data-vu="duskblade" data-ontgl="confirmBladeOfBlood" class="mnu">
+      <div class="tgl baleful">Blade of Blood (-5hp)🩸</div>
+    </div>
+
+    <div data-vu="principale defending" class="nfo">Defending Main Principale</div>
+    <div data-vu="principale defending" id="defending1" class="mnu">
+      <div class="on">0</div>
+      <div data-tpl="eachDefending1" data-lbl="Defending Main Principale">
+        TPL_VAL
+        <span>(+TPL_VALuac/defm=-TPL_VAL)</span>
+      </div>
+    </div>
+
+    <div data-vu="secondaire defending" class="nfo">Defending Main Secondaire</div>
+    <div data-vu="secondaire defending" id="defending2" class="mnu">
+      <div class="on">0</div>
+      <div data-tpl="eachDefending2" data-lbl="Defending Main Secondaire">
+        TPL_VAL
+        <span>(+TPL_VALuac/defo=-TPL_VAL)</span>
+      </div>
+    </div>
+
+    <div data-vu="feat favoredennemy" class="nfo">Favored Ennemy</div>
+    <div data-vu="feat favoredennemy" class="mnu" id="favoredEnnemy">
+      <div data-tpl="eachFavoredEnnemy" id="favoredEnnemyTPL_VAL" class="tgl" data-lbl="Favored Ennemy: TPL_VAL">
+        TPL_VAL <span>(+2udmg)</span>
+      </div>
+    </div>
+    <div id="version">version: 2026-11-05_18:00:49</div>
+
+  </div>
+
+  <div class="pg" id="feats" data-ontgl="updateFeat">
+    <div class="nfo">Sélectionnez les feats/capacitées de votre perso:</div>
+    <div class="tgl">Combat Expertise</div>
+    <div class="tgl">Power Attack</div>
+    <div class="tgl" data-vu="feat powerattack">Leap Attack</div>
+    <div class="tgl">Sneak</div>
+    <div class="mnu" id="sneak_dice" data-vu="feat sneak">
+      <div class="on">1d6</div>
+      <template data-tok="X" data-from="2" data-to="11">
+        <div>Xd6</div>
+      </template>
+    </div>
+    <div class="tgl">Weapon Focus</div>   
+    <datalist id="listeWeaponFocus"></datalist>
+    <div data-vu="feat weaponfocus" class="tr featparams" data-ltitle="weapons:">
+      <input placeholder="veuillez spécifier..." id="weaponFocus1" disabled="" type="search" name="weaponFocus1" data-touch="edit" maxlength="30" list="listeWeaponFocus" pattern="[A-Za-zÀ-ÿ\-]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)">
+      <input id="weaponFocus2" disabled="" type="search" name="weaponFocus2" data-touch="edit" maxlength="30" list="listeWeaponFocus" pattern="[A-Za-zÀ-ÿ\-]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)">
+      <input id="weaponFocus3" disabled="" type="search" name="weaponFocus3" data-touch="edit" maxlength="30" list="listeWeaponFocus" pattern="[A-Za-zÀ-ÿ\-]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)">
+      <input id="weaponFocus4" disabled="" type="search" name="weaponFocus4" data-touch="edit" maxlength="30" list="listeWeaponFocus" pattern="[A-Za-zÀ-ÿ\-]+" onkeydown="blurOnEnter(event)" onblur="disableMe(event)">
+    </div>
+    <div class="tgl">Point Blank Shot</div>
+    <div class="tgl">Precise Shot</div>
+    <div class="tgl">Rapid Shot</div>
+    <div class="tgl">Zen Archery</div>
+    <div class="tgl">Favored Ennemy</div>
+    <div data-vu="feat favoredennemy" class="tr featparams" data-ltitle="ennemy:">
+      <input id="favoredennemy1" placeholder="veuillez spécifier..." type="text">
+      <input id="favoredennemy2" type="text">
+      <input id="favoredennemy3" type="text">
+      <input id="favoredennemy4" type="text">
+    </div>
+    <div class="tgl">Two Weapons Fighting</div>
+    <div class="tgl" data-vu="feat twoweaponsfighting">Improved Two Weapons Fighting</div>
+    <div class="tgl" data-vu="feat improvedtwoweaponsfighting">Greater Two Weapons Fighting</div>
+    <div class="tgl" data-vu="feat greatertwoweaponsfighting">Supreme Two Weapons Fighting</div>
+    <div class="tgl" data-vu="feat twoweaponsfighting">Off Hand Parry</div>
+    <div class="tgl">Spellwise<span>(+2uwill_Illusion)</span></div>
+    <div class="tgl">Lightning Reflex<span>(+2ureflex)</span></div>
+    <div class="tgl">Iron Will<span>(+2uwill)</span></div>
+    <div class="tgl">Flaw Vulnerable<span>(-1uac)</span></div>
+    <div class="tgl">Flaw Noncombatant<span>(-2umel)</span></div>
+    <div class="tgl">Flaw Gullible<span>(-2uwill_Enchantment_Illusion)</span></div>
+    <div class="tgl">Familiar Rat<span>(+2ufort)</span></div>
+    <div class="tgl">Thoughness<span>(hp=+3)</span></div>
+    <div class="tgl">Force Of Personality</div>
+    <div class="tgl">Luck of heroes<span>(+1lsav/+1lac)</span></div>
+    <div class="tgl">Duskblade Channeling</div>
+    <div class="tgl">Paladin Powers</div>
+  </div>
+
+  <div class="pg" id="equip">
+    <div class="nfo">
+      Groupes Arme(s)(/Bouclier)
+    </div>
+    <div id="unarmed_tpl">
+      <span class="short">✋🗡Unarmed</span>
+      <span class="long">(1h/m/Unarmed/1d3)</span>
+      <span class="short"></span>
+      <span class="long"></span>
+    </div>
+    <ol id="groupes_armes">
+      <li id="g1">
+        <span class="g">
+          <span class="short">✋🗡Unarmed</span>
+          <span class="long">(1h/m/Unarmed/1d3)</span>
+          <span class="short"></span>
+          <span class="long"></span>
+        </span>
+      </li>
+      <li id="g2">
+        <span class="g">
+          <span class="short">✋🗡Unarmed</span>
+          <span class="long">(1h/m/Unarmed/1d3)</span>
+          <span class="short"></span>
+          <span class="long"></span>
+        </span>
+      </li>
+      <li id="g3">
+        <span class="g">
+          <span class="short">✋🗡Unarmed</span>
+          <span class="long">(1h/m/Unarmed/1d3)</span>
+          <span class="short"></span>
+          <span class="long"></span>
+        </span>
+      </li>
+      <li id="g4">
+        <span class="g">
+          <span class="short">✋🗡Unarmed</span>
+          <span class="long">(1h/m/Unarmed/1d3)</span>
+          <span class="short"></span>
+          <span class="long"></span>
+        </span>
+      </li>
+      <li id="g5">
+        <span class="g">
+          <span class="short">✋🗡Unarmed</span>
+          <span class="long">(1h/m/Unarmed/1d3)</span>
+          <span class="short"></span>
+          <span class="long"></span>
+        </span>
+      </li>
+    </ol>
+    <div class="nfo">
+      Armure et Autre Équipement
+    </div>
+    <ul id="armure_equipement">
+      <template data-tok="TOK" data-from="1" data-to="8">
+        <li id="eTOK"><span class="short"></span><span class="long"></span></li>
+      </template>
+    
+  </ul></div>
+
+  <div class="pg" id="saves">
+    <p>
+      Note: Les cases <b><i>Tmp+-</i></b> et ne doivent être utilisées que pour des modifications spéciales non-supportées.      
+      Il est préférable d'utiliser les onglets Buffs et Equip en priorité.
+    </p>
+
+    <div class="grid">
+      <b></b>
+      <b>Total</b>
+      <b>Base</b>
+      <b>Tmp+-</b>
+      <b>Stats</b>
+      <b>Buff</b>
+      <hr>
+
+      <i>(Tous)</i>
+      <i></i>
+      <i></i>
+      <input id="saveTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <i></i>
+      <i></i>
+      <hr>
+
+      Fortitude
+      <div id="fortTot">1</div>
+      <input id="fort" maxlength="2" step="1" min="1" max="50" type="number" value="1">
+      <input id="fortTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="fortStats">+0</div>
+      <div id="fortBuff">+0</div>
+      <template data-save="fort">
+        <div class="special_save fort" data-id="name"></div>
+        <div class="special_save fort" data-id="tot"></div>
+        <div class="special_save fort" data-id="base"></div>
+        <div class="special_save fort" data-id="tmp"></div>
+        <div class="special_save fort" data-id="stats"></div>
+        <div class="special_save fort" data-id="buff"></div>
+      </template>
+      <hr>
+
+      Reflex
+      <div id="reflexTot">1</div>
+      <input id="reflex" step="1" min="1" max="50" type="number" value="1">
+      <input id="reflexTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="reflexStats">+0</div>
+      <div id="reflexBuff">+0</div>
+      <template data-save="reflex">
+        <div class="special_save reflex" data-id="name"></div>
+        <div class="special_save reflex" data-id="tot"></div>
+        <div class="special_save reflex" data-id="base"></div>
+        <div class="special_save reflex" data-id="tmp"></div>
+        <div class="special_save reflex" data-id="stats"></div>
+        <div class="special_save reflex" data-id="buff"></div>
+      </template>
+      <hr>
+
+      Will
+      <div id="willTot">1</div>
+      <input id="will" step="1" min="1" max="50" type="number" value="1">
+      <input id="willTmp" maxlength="3" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="willStats">+0</div>
+      <div id="willBuff">+0</div>
+      <template data-save="will">
+        <div class="special_save will" data-id="name"></div>
+        <div class="special_save will" data-id="tot"></div>
+        <div class="special_save will" data-id="base"></div>
+        <div class="special_save will" data-id="tmp"></div>
+        <div class="special_save will" data-id="stats"></div>
+        <div class="special_save will" data-id="buff"></div>
+      </template>
+    </div>
+
+    <p>
+      Note2: Les cases <i>Buff</i> incluent l'équipement et le modificateur <i>(Tous) <b>Tmp+-</b></i>.
+    </p>
+  </div>
+
+  <div class="pg" id="HP">
+    <div class="grid">
+      <b></b>
+      <b>Base</b>
+      <b>Tmp+-</b>
+      <b>Const.</b>
+      <b>Buff</b>
+      <b>Total(Max)</b>
+
+      HP
+      <input id="hp" step="1" min="1" max="50" type="number" value="8">
+      <input id="hpTmp" inputmode="numeric" pattern="-?[0-9]*" type="text" value="0">
+      <div id="hpStats">+0</div>
+      <div id="hpBuff">+0</div>
+      <div id="hpTot">8</div>      
+    </div>
+    <div class="nfo">
+      Note: tel que spécifié via PH263, la case "Const." ci-dessus ignore
+      la constitution de base de Trollshape/Polymorph.<br>
+      Elle est calculée selon: Niveau x (Bonus de consititution).<br>
+      <br>
+    </div>
+    <template id="bobo_tpl" data-done="true">
+      <span class="bobo">🩸 TPL_VAL hp</span><span class="heal">✚ Heal</span> 
+    </template>
+    <div id="hpActuel">
+      <b>Blessures</b>
+      <b>HP Actuel</b>
+      <div id="blessures"></div>
+      <div>
+        <div id="currHP"></div>
+      </div>
+    </div>
+    <div>
+      <br>
+    </div>
+    <div id="hpFooter">
+      <div class="bobo" id="newBobo">🩸+Blessure</div>
+      &nbsp;
+      <div id="fullHeal"><span class="heal">✚ Full Heal</span></div>
+    </div>
+  </div>
+
+  <div id="buffs" class="pg">
+    <div class="nfo"></div>
+    <div class="col" id="boosts">
+      <div class="filler"></div>
+    </div>
+    <div id="add_buff">Ajouter Un Buff +</div>
+    <div class="tr gear-icon bottomleft"></div>
+    <span id="editBuffsBtn"></span>
+  </div>
+
+  <!--
+  <div id="fullscreen">Plein Écran</div>
+  -->
+
+
+<script>
+if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/dndapp/katiana/service-worker.js');
+  });
+}
+
+
+// dnd.js
+
+// section compatibilité vieux téléphones
+const M_OLD = '⚔';
+const M_NEW = '🗡';
+let SW = M_NEW;
+
+function fixEpees() {
+  SW = M_OLD;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, {
+    acceptNode: function(node) {
+      if (node.childElementCount || !node.textContent) {
+        return NodeFilter.FILTER_SKIP;
+      }
+      if (node.textContent.includes(M_NEW)) {
+        return NodeFilter.FILTER_ACCEPT;
+      }
+      return NodeFilter.FILTER_SKIP;
+    }
+  });
+  let el = walker.nextNode();
+  while (el) {
+    el.textContent = el.textContent.replaceAll(M_NEW, M_OLD);
+    el = walker.nextNode();    
+  }
+}
+
+if (!('structuredClone' in globalThis)) {
+  globalThis.structuredClone = function(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  };
+  fixEpees();
+}
+// fin section compatibilité
+
+
+function lsKeyName(key) {
+  return key + _('savedData').dataset.saveid;
+}
+
+function updateLsTimestamp() {
+  _('savedData').dataset.saveid = Date.now();
+}
+
+function lsGet(key) {
+  return localStorage.getItem(lsKeyName(key));
+}
+
+function lsSet(key, data) {
+  localStorage.setItem(lsKeyName(key), data);
+}
+
+if (localStorage.getItem('clearSavedData')) {
+  localStorage.clear();
+  _('savedData').textContent = '';
+} else if (!lsGet('dnd')) {
+  const preSavedData = _('savedData').textContent;
+  if (preSavedData.indexOf('PAGE') >= 0) {
+    lsSet('dnd', preSavedData);
+  }
+}
+
+
+if (!Element.prototype.checkVisibility) {
+  Element.prototype.checkVisibility = function(options) {
+    // Basic options handling
+    const checkOpacity = options?.opacityProperty ?? false;
+    const checkVisibility = options?.visibilityProperty ?? false;
+
+    // 1. Check if element is attached and has layout box dimensions
+    if (this.offsetWidth === 0 && this.offsetHeight === 0 && this.getClientRects().length === 0) {
+      return false;
+    }
+
+    // 2. Walk up the DOM tree and check computed styles
+    let el = this;
+    while (el && el.nodeType === Node.ELEMENT_NODE) {
+      const style = window.getComputedStyle(el);
+
+      if (style.display === 'none') {
+        return false;
+      }
+      if (checkVisibility && (style.visibility === 'hidden' || style.visibility === 'collapse')) {
+        return false;
+      }
+      if (checkOpacity && checkOpacity !== 'noCheck' && parseFloat(style.opacity) === 0) {
+        return false;
+      }
+
+      el = el.parentElement;
+    }
+
+    return true;
+  };
+}
+
+const D = {};
+
+function _(id) {
+  return document.getElementById(id);
+}
+
+function q(sel) {
+  return document.querySelector(sel);
+}
+
+function qa(sel) {
+  return document.querySelectorAll(sel);
+}
+
+function reverseMap(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [value, key])
+  );
+}
+
+D.BONUS = {
+  a: 'armor',
+  c: 'sacred',
+  d: 'dodge',
+  e: 'enhancement',
+  f: 'deflection',
+  i: 'insight',
+  l: 'luck',
+  m: 'morale',
+  n: 'natural',
+  r: 'resistance',
+  s: 'shield',
+  u: 'untyped',
+  p: 'special',
+  z: 'size'
+}
+D.BONUS_REVERSE = reverseMap(D.BONUS);
+
+D.CAN_STACK = {
+  d: true,
+  u: true,
+  hp: true
+}
+
+D.TARGET = {
+  str: 'force',
+  dex: 'dextérité',
+  con: 'constitution',
+  int: 'intelligence',
+  wis: 'sagesse',
+  cha: 'charisme',
+  ac: 'armure',
+  sac: 'armure bouclier',
+  nac: 'armure naturelle',
+  hp: 'points de vie',
+  tch: 'toucher',
+  mel: 'toucher melee',
+  dmg: 'dégats',
+  siz: 'taille',
+  atk: 'attaque supp.',
+  sav: 'all saves',
+  fort: 'fortitude',
+  will: 'will',
+  reflex: 'reflex',
+  bab: 'base attack',
+  maxdex: 'dex max armure',
+  maxstr: 'force max composite',
+  lvl: 'niveau',
+  basesize: 'Taille de base',
+  weap: 'weapon',
+  defo: 'defending',
+  defm: 'defending',
+  sneak: 'Sneak attack',
+  pwa: 'Power Attack',
+  basestr: 'force de base',
+  basedex: 'dextérité de base',
+  basecon: 'constitution de base',
+  baseint: 'intelligence de base',
+  basecha: 'charisme de base',
+  basewis: 'sagesse de base',
+  basesiz: ''
+}
+D.TARGET_REVERSE = reverseMap(D.TARGET);
+
+// Value = chaque lettre de type de bonus accepté
+// exemple  str: 'eu' signifie Force accepte des bonus 'enhancement' et 'untype' "
+// all types = 'acdefilmnrsuz'
+D.TARGET_BONUS = {
+  str: 'celmuz',
+  dex: 'celmuz',
+  con: 'celmu',
+  int: 'celmu',
+  wis: 'celmu',
+  cha: 'celmu',
+  ac: 'acdeflnsuzp',
+  sac: 'e',
+  nac: 'e',
+  hp: '',
+  tch: 'ceilmuz',
+  mel: 'u',
+  dmg: 'ceilmu',
+  siz: 'z',
+  atk: '',
+  sav: 'cilmru',
+  fort: 'cilmru',
+  will: 'cilmru',
+  reflex: 'cdilmru',
+  bab: '',
+  maxdex: '',
+  maxstr: '',
+  atk: 'u',
+  weap: 'e',
+  defo: '',
+  defm: ''
+}
+D.STATS_NAME_PER_BONUS_NAME = {};
+for (const [l, name] of Object.entries(D.BONUS)) {
+  const arr = [];
+  for (const [statKey, bonusLetters] of Object.entries(D.TARGET_BONUS)) {
+    if (bonusLetters.indexOf(l) >= 0) {
+      arr.push(D.TARGET[statKey]);
+    }
+  }
+  arr.sort();
+  D.STATS_NAME_PER_BONUS_NAME[name] = arr;
+}
+
+D.ALL_POSSIBILITIES = {}
+for (const [stat, ltrs] of Object.entries(D.TARGET_BONUS)) {
+  for (const l of ltrs) {
+    const key = l + stat;
+    D.ALL_POSSIBILITIES[key] = {
+      l: l,
+      bonus: D.BONUS[l],
+      stat: stat,
+      target: D.TARGET[stat],
+      stack: !!D.CAN_STACK[l]
+    }
+  }
+}
+
+D.ENLARGE_DMG_MAP = {
+  "1d2": "1d3",
+  "1d3": "1d4",
+  "1d4": "1d6",
+  "1d6": "1d8",
+  "1d8": "2d6",
+  "1d10": "2d8",
+  "1d12": "3d6",
+  "2d4": "2d6",
+  "2d6": "3d6",
+  "2d8": "3d8",
+  "3d6": "4d6",
+  "3d8": "4d8",
+  "4d6": "6d6",
+  "4d8": "6d8",
+  "6d6": "8d6",
+  "6d8": "8d8",
+  "8d6": "12d6",
+  "8d8": "12d8"
+}
+
+D.SIZE_NAME = {
+  '-2': 'Tiny',
+  '-1': 'Small',
+  '0': 'Medium',
+  '1': 'Large',
+  '2': 'Huge'
+}
+
+D.WEAPONS_LOOKUP = [
+[ "filter", "name", "cost", "dice_small", "dice", "crit", "increment", "weight", "typ" ],
+[ "1H-M-T-L", "Dagger", "2 gp", "1d3", "1d4", "19-20/x2", "10 ft.", "1 lb.", "Piercing or slashing"],
+[ "1H-M-L",  "Light-Mace", "5 gp", "1d4", "1d6", "x2", "N/A", "4 lb.", "Bludgeoning"],
+[ "1H-M-L",  "Sickle", "6 gp", "1d4", "1d6", "x2", "N/A", "2 lb.", "Slashing"],
+[ "1H-M",  "Club", "N/A", "1d4", "1d6", "x2", "10 ft.", "3 lb.", "Bludgeoning"],
+[ "1H-M",  "Heavy-Mace", "12 gp", "1d6", "1d8", "x2", "N/A", "8 lb.", "Bludgeoning"],
+[ "1H-M",  "Morningstar", "8 gp", "1d6", "1d8", "x2", "N/A", "6 lb.", "Bludgeoning and piercing"],
+[ "1H-M-T", "Shortspear", "1 gp", "1d4", "1d6", "x2", "20 ft.", "3 lb.", "Piercing"],
+[ "2H-M",  "Longspear", "5 gp", "1d6", "1d8", "x3", "N/A", "9 lb.", "Piercing"],
+[ "2H-M",  "Quarterstaff", "N/A", "1d4/1d4", "1d6/1d6", "x2", "N/A", "4 lb.", "Bludgeoning"],
+[ "2H-M",  "Spear", "2 gp", "1d6", "1d8", "x3", "20 ft.", "6 lb.", "Piercing"],
+[ "2H-R",  "Heavy-Crossbow", "50 gp", "1d8", "1d10", "19-20/x2", "120 ft.", "8 lb.", "Piercing"],
+[ "2H-R-L",  "Light-Crossbow", "35 gp", "1d6", "1d8", "19-20/x2", "80 ft.", "4 lb.", "Piercing"],
+[ "1H-T-L", "Dart", "5 sp", "1d3", "1d4", "x2", "20 ft.", "½ lb.", "Piercing"],
+[ "1H-T", "Javelin", "1 gp", "1d4", "1d6", "x2", "30 ft.", "2 lb.", "Piercing"],
+[ "1H-R",  "Sling", "N/A", "1d3", "1d4", "x2", "50 ft.", "0 lb.", "Bludgeoning"],
+[ "1H-M-T-L", "Throwing-Axe", "8 gp", "1d4", "1d6", "x2", "10 ft.", "2 lb.", "Slashing"],
+[ "1H-M-T-L", "Light-Hammer", "1 gp", "1d3", "1d4", "x2", "20 ft.", "2 lb.", "Bludgeoning"],
+[ "1H-M-L",  "Handaxe", "6 gp", "1d4", "1d6", "x3", "N/A", "3 lb.", "Slashing"],
+[ "1H-M-L",  "Light-Pick", "4 gp", "1d3", "1d4", "x4", "N/A", "3 lb.", "Piercing"],
+[ "1H-M-L",  "Sap", "1 gp", "1d4", "1d6", "x2", "N/A", "2 lb.", "Bludgeoning"],
+[ "1H-M-L",  "Shortsword", "10 gp", "1d4", "1d6", "19-20/x2", "N/A", "2 lb.", "Piercing"],
+[ "1H-M",  "Battleaxe", "10 gp", "1d6", "1d8", "x3", "N/A", "6 lb.", "Slashing"],
+[ "1H-M",  "Flail", "8 gp", "1d6", "1d8", "x2", "N/A", "5 lb.", "Bludgeoning"],
+[ "1H-M",  "Longsword", "15 gp", "1d6", "1d8", "19-20/x2", "N/A", "4 lb.", "Slashing"],
+[ "1H-M",  "Heavy-Pick", "8 gp", "1d4", "1d6", "x4", "N/A", "6 lb.", "Piercing"],
+[ "1H-M",  "Rapier", "20 gp", "1d4", "1d6", "18-20/x2", "N/A", "2 lb.", "Piercing"],
+[ "1H-M",  "Scimitar", "15 gp", "1d4", "1d6", "18-20/x2", "N/A", "4 lb.", "Slashing"],
+[ "1H-M",  "Trident", "15 gp", "1d6", "1d8", "x2", "10 ft.", "4 lb.", "Piercing"],
+[ "1H-M",  "Warhammer", "12 gp", "1d6", "1d8", "x3", "N/A", "5 lb.", "Bludgeoning"],
+[ "2H-M",  "Falchion", "75 gp", "1d6", "2d4", "18-20/x2", "N/A", "8 lb.", "Slashing"],
+[ "2H-M",  "Glaive", "8 gp", "1d8", "1d10", "x3", "N/A", "10 lb.", "Slashing"],
+[ "2H-M",  "Greataxe", "20 gp", "1d10", "1d12", "x3", "N/A", "12 lb.", "Slashing"],
+[ "2H-M",  "Greatclub", "5 gp", "1d8", "1d10", "x2", "N/A", "8 lb.", "Bludgeoning"],
+[ "2H-M",  "Heavy-Flail", "15 gp", "1d8", "1d10", "19-20/x2", "N/A", "10 lb.", "Bludgeoning"],
+[ "2H-M",  "Greatsword", "50 gp", "1d10", "2d6", "19-20/x2", "N/A", "8 lb.", "Slashing"],
+[ "2H-M",  "Guisarme", "9 gp", "1d6", "2d4", "x3", "N/A", "12 lb.", "Slashing"],
+[ "2H-M",  "Halberd", "10 gp", "1d8", "1d10", "x3", "N/A", "12 lb.", "Piercing or slashing"],
+[ "2H-M",  "Lance", "10 gp", "1d6", "1d8", "x3", "N/A", "10 lb.", "Piercing"],
+[ "2H-M",  "Ranseur", "10 gp", "1d6", "2d4", "x3", "N/A", "12 lb.", "Piercing"],
+[ "2H-M",  "Scythe", "18 gp", "1d6", "2d4", "x4", "N/A", "10 lb.", "Piercing or slashing"],
+[ "2H-R",  "Longbow", "75 gp", "1d6", "1d8", "x3", "100 ft.", "3 lb.", "Piercing"],
+[ "2H-R",  "Composite-Longbow", "100 gp", "1d6", "1d8", "x3", "110 ft.", "3 lb.", "Piercing"],
+[ "2H-R",  "Shortbow", "30 gp", "1d4", "1d6", "x3", "60 ft.", "2 lb.", "Piercing"],
+[ "2H-R",  "Composite-Shortbow", "75 gp", "1d4", "1d6", "x3", "70 ft.", "2 lb.", "Piercing"],
+[ "1H-M",  "Bastard-Sword", "35 gp", "1d8", "1d10", "19-20/x2", "N/A", "6 lb.", "Slashing"],
+[ "1H-M",  "Whip", "1 gp", "1d2", "1d3", "x2", "N/A", "2 lb.", "Slashing"],
+[ "1H-R-L",  "Hand-Crossbow", "100 gp", "1d3", "1d4", "19-20/x2", "30 ft.", "2 lb.", "Piercing"]
+];
+function arrToMap(arr) {
+  const map = {};
+  for (let i = 1; i < arr.length; i++) {
+    const obj = {};
+    for (let j = 0; j < arr[0].length; j++) {
+      obj[arr[0][j]] = arr[i][j];
+    }
+    map[obj.name] = obj;
+  }
+  return map;
+}
+D.WEAPONS_MAP = arrToMap(D.WEAPONS_LOOKUP);
+function getLightWeaponRegExp() {
+  const arr = D.WEAPONS_LOOKUP.filter(w => w[0].includes('L')).map(w => w[1]);
+  D.LIGHT_WEAPON_REGEXP = new RegExp(arr.map(w => 
+    w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  ).join('|'), 'gi');
+}
+getLightWeaponRegExp();
+
+D.ARMOR_LOOKUP = [
+["filter","name","cost","ac","maxdex","acpenalty","arrcanefail","speed30","speed20","weight" ],
+["","Light armor","","","","","","","","" ],
+["A","Padded","5 gp",1,"+8",0,"5%","30 ft.","20 ft.","10 lb." ],
+["A","Leather","10 gp",2,"+6",0,"10%","30 ft.","20 ft.","15 lb." ],
+["A","Studded-Leather","25 gp",3,"+5",-1,"15%","30 ft.","20 ft.","20 lb." ],
+["A","Chainshirt","100 gp",4,"+4",-2,"20","30 ft.","20 ft.","25 lb." ],
+["","Medium armor","","","","","","","","" ],
+["A","Hide","15 gp",3,"+4",-3,"20%","20 ft.","15 ft.","25 lb." ],
+["A","Scale-Mail","50 gp","+4",3,-4,"25%","20 ft.","15 ft.","30 lb." ],
+["A","Chainmail","150 gp","+5",2,-5,"30%","20 ft.","15 ft.","40 lb." ],
+["A","Breastplate","200 gp","+5",3,-4,"25%","20 ft.","15 ft.","30 lb." ],
+["","Heavy armor","","","","","","","","" ],
+["A","Splint-Mail","200 gp","+6",0,-7,"40%","20 ft.2","15 ft.2","45 lb." ],
+["A","Banded-Mail","250 gp","+6",1,-6,"35%","20 ft.2","15 ft.2","35 lb." ],
+["A","Half-Plate","600 gp","+7",0,-7,"40%","20 ft.2","15 ft.2","50 lb." ],
+["A","Full-Plate","1,500 gp","+8",1,-6,"35%","20 ft.2","15 ft.2","50 lb." ],
+["","Shields","","","","","","","","" ],
+["S","Buckler","15 gp",1,"N/A",-1,"5%","N/A","N/A","5 lb." ],
+["S","Light-Shield","3 gp",1,"N/A",-1,"5%","N/A","N/A","5 lb." ],
+["S","Heavy-Shield","7 gp",2,"N/A",-2,"15%","N/A","N/A","10 lb." ],
+["S","Tower-Shield","30 gp",4,"+2",-10,"50%","N/A","N/A","45 lb." ]
+];
+D.ARMOR_MAP = arrToMap(D.ARMOR_LOOKUP);
+
+// example source from ui (equip/Periapt of Wisdom +2/+2ewis)
+
+D.EQUIP_LOOKUP = `
+Amulet of Health +2/+2econ
+Amulet of Health +4/+4econ
+Amulet of Health +6/+6econ
+Amulet of Natural Armor +1/+1nac
+Amulet of Natural Armor +2/+2nac
+Amulet of Natural Armor +3/+3nac
+Amulet of Natural Armor +4/+4nac
+Amulet of Natural Armor +5/+5nac
+Belt of Giant Strength +4/+4estr
+Belt of Giant Strength +6/+6estr
+Bracers of Armor +1/+1aac
+Bracers of Armor +2/+2aac
+Bracers of Armor +3/+3aac
+Bracers of Armor +4/+4aac
+Bracers of Armor +5/+5aac
+Bracers of Armor +6/+6aac
+Bracers of Armor +7/+7aac
+Bracers of Armor +8/+8aac
+Cloak of Charisma +2/+2echa
+Cloak of Charisma +4/+4echa
+Cloak of Charisma +6/+6echa
+Cloak of Resistance +1/+1rsav
+Cloak of Resistance +2/+2rsav
+Cloak of Resistance +3/+3rsav
+Cloak of Resistance +4/+4rsav
+Cloak of Resistance +5/+5rsav
+Gauntlets of Ogre Power/+2estr
+Gloves of Dexterity +2/+2edex
+Gloves of Dexterity +4/+4edex
+Gloves of Dexterity +6/+6edex
+Headband of Intellect +2/+2eint
+Headband of Intellect +4/+4eint
+Headband of Intellect +6/+6eint
+Periapt of Wisdom +2/+2ewis
+Periapt of Wisdom +4/+4ewis
+Periapt of Wisdom +6/+6ewis
+Ring of Protection +1/+1fac
+Ring of Protection +2/+2fac
+Ring of Protection +3/+3fac
+Ring of Protection +4/+4fac
+Ring of Protection +5/+5fac
+Stone of Good Luck/+1lsav
+`;
+D.EQUIP_MAP = {}
+function buildEquipMap() {  
+  const lines = D.EQUIP_LOOKUP.split('\n').sort();
+  for (const l of lines) {
+    const tokens = l.trim().split('/');
+    if (tokens[1]) {
+      D.EQUIP_MAP[tokens[0]] = '(equip/' + l.trim() + ')'
+    }
+  }
+}
+buildEquipMap();
+
+D.REDUCE_DMG_MAP = {
+  "1d3": "1d2",
+  "1d4": "1d3",
+  "1d6": "1d4",
+  "1d8": "1d6",
+  "2d6": "1d8",
+  "2d8": "1d10",
+  "3d6": "1d12",
+  "3d8": "2d8",
+  "4d6": "3d6",
+  "4d8": "3d8",
+  "6d6": "4d6",
+  "6d8": "4d8",
+  "8d6": "6d6",
+  "8d8": "6d8",
+  "12d6": "8d6",
+  "12d8": "8d8"
+}
+
+D.DEFAULT_BOOSTS = `
+PAGE buffs
+boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
+  Inspire Courage 2(+2mtch/+2mdmg/+2mwill_Fear_Charm),
+  Inspire Courage 1(+1mtch/+1mdmg/+1mwill_Fear_Charm),
+  Shield(+4sac),
+  Bull's Strength(+4estr),
+  Cat's Grace(+4edex),
+  Bear's Endurance(+4econ),
+  Eagle's Splendor(+4echa),
+  Owl's Wisdom(+4ewis),
+  Fox's Cunning(+4eint),
+  Elation(+2mstr/+2mdex),
+  Enlarge(+2zstr/-2zdex/-1ztch/+1zsiz),
+  Haste(+1utch/+1dac/+1uatk),
+  Heroism(+2mtch/+2msav),
+  Shield of Faith(+2fac),
+  Shield Other(+1fac/+1rsav),
+  Barkskin(+2enac),
+  Bless(+1mtch/+1mwill_Fear),
+  Prot From Evil(+2fac/+2rsav),
+  Prayer(+1lsav/+1ltch/+1ldmg),
+  Magic Vest. Armor lv5(+1eac),
+  Magic Vest. Shield lv5(+1esac),
+  Magic Vest. Armor lv8(+2eac),
+  Magic Vest. Shield lv8(+2esac),
+  Aid lv7(+1mtch/+1mwill_Fear/hp=+1d8+7),
+  Resistance(+1rsav),
+  Magic Weapon(+1eweap),
+  Mage Armor(+4aac),
+  Greater Mage Armor(+6aac),
+  Remove Fear(+4mwill_Fear),
+  Divine Power(bab=lvl/+6estr/hp=+1*lvl),
+  Divine Favor lv7(+2ltch/+2ldmg),
+  Troll Shape(basestr=23/basedex=14/basecon=23/baseint=6/basewis=9/basecha=6/+5nac/hp=+30/basesize=1/-1zac),
+  Polymorph Troll(basestr=23/basedex=14/basecon=23/+5nac/basesize=1/-1zac),
+  True Strike(+20itch)`;
+
+function fillDatalist(lst, datalist) {
+  datalist.innerHTML = "";
+  for (const nom of lst) {
+    const option = document.createElement('option');
+    option.value = nom;
+    datalist.appendChild(option);
+  }
+}
+
+function listeWeaponFocus() {
+  const lst = D.WEAPONS_LOOKUP.map(a => a[1])
+    .filter(w => !w.startsWith('Composite') && w !== 'name')
+    .sort();
+  fillDatalist(lst, _('listeWeaponFocus'));
+}
+// faite une seule fois
+listeWeaponFocus();
+
+function removeLastChar(str, char) {
+  const idx = str.lastIndexOf(char);
+  if (idx === -1) return str;
+  return str.slice(0, idx) + str.slice(idx + 1);
+}
+
+function shortArme(obj) {
+  return [
+    obj.main ? 'main' : 'off',
+    obj.lbl,
+    obj.de,
+    obj.dmg >= 0 ? '+' + obj.dmg : obj.dmg
+  ].join(' ');
+}
+
+function getCurrCfg() {
+  let retVal = [];
+  for (let k in BASE) {
+    if (k !== 'armes') {
+      retVal.push(k + ' ' + BASE[k]);
+    }
+  }
+  retVal.push(shortArme(BASE.armes[0]));
+  retVal.push(shortArme(BASE.armes[1]));
+  qa("#boosts .tgl").forEach(b => {
+    let txt = b.textContent.trim();
+    txt = removeLastChar(txt, '(');
+    txt = removeLastChar(txt, ')');
+    retVal.push(txt);
+  });
+  return retVal.join('\n');
+}
+
+function isNotVu(el) {
+  if (!el.closest) {
+    return false;
+  }
+  if (el.dataset.vu && !el.classList.contains('vu')) {
+    return true;
+  }
+  return el.closest('[data-vu]:not(.vu)') != null;
+}
+
+function isIgnored(span) {
+  if (span.classList.contains('short') || span.classList.contains('long')) {
+    // TODO: handle equip differently or change syntax to be compatible
+    return true;
+  }
+  return isNotVu(span);
+}
+
+function microCumule(retVal, keyword, details, nom, mod) {
+  if (!retVal[keyword]) {
+    retVal[keyword] = {
+      val: mod,
+      details,        
+      parts: {}
+    };
+  } else if (!isNaN(mod)) {
+    if (details.stack === 'reverse') {
+      if (mod < retVal[keyword].val) {
+        retVal[keyword].val = mod;
+      }
+    } else if (details.stack) {
+      retVal[keyword].val += mod;  
+    } else if (mod > retVal[keyword].val) {
+      retVal[keyword].val = mod;
+    }
+  } else if (mod.match?.(/^x[0-9]/)) {
+    // multiplicateur (ex: force x0.5)
+    const x = parseFloat(mod.replace('x', ''));
+    const v = retVal[keyword].val;
+    retVal[keyword].val = Math.floor(x * v);
+  }
+  retVal[keyword].parts[nom] = mod;
+}
+
+function setupPossibility(stack, keyword) {
+  if (!D.ALL_POSSIBILITIES[keyword]) {
+    D.ALL_POSSIBILITIES[keyword] = {
+      stat: keyword,
+      bonus: keyword,
+      stack,
+      target: keyword
+    }
+  }
+}
+
+function microCumuleAP(retVal, keyword, nom, mod) {
+  // create on the fly generic stackable keyword
+  setupPossibility(true, keyword);
+  microCumule(retVal, keyword, D.ALL_POSSIBILITIES[keyword], nom, mod);
+}
+
+function microCumuleReverse(retVal, keyword, nom, mod) {
+  // create on the fly reverse stackable keyword
+  setupPossibility('reverse', keyword);
+  microCumule(retVal, keyword, D.ALL_POSSIBILITIES[keyword], nom, mod);
+}
+
+function microCumuleDice(retVal, keyword, nom, mod) {
+  setupPossibility('first', keyword);
+  microCumule(retVal, keyword, D.ALL_POSSIBILITIES[keyword], nom, mod);
+}
+
+function calculeFormula(formula) {
+  if ((formula === 'lvl') || (formula === '+1*lvl')) {
+    return D.PERSO.lvl;
+  }
+  if (formula.match(/^[+-]?\d+$/)) {
+    return parseInt(formula);
+  }
+  console.log('null formula', formula);
+  // TODO handle more complex formula for special effects later
+  // example hp=+1d8+1*lvl
+  return null;
+}
+
+function cummuleSpecial(nom, e, retVal) {    
+  const statFormula = e.split('=');
+  const details = {
+    stat: statFormula[0],
+    bonus: D.TARGET[statFormula[0]],
+    target: D.TARGET[statFormula[0]],
+    formula: statFormula[1],
+    stack: false
+  }
+  if (details.stat.startsWith('max')) {
+    details.stack = 'reverse';
+  } else if (D.CAN_STACK[details.stat]) {
+    details.stack = true;
+  }
+  if (!details.target) {
+    warnOnce('Keyword not supported: ' + details.stat);
+    return;
+  }
+  let mod = calculeFormula(details.formula);
+  if (mod === null) {
+    warnOnce('formula not supported: ' + details.formula);
+    return;
+  }
+  microCumule(retVal, details.stat, details, nom, mod);
+}
+
+function cummuleEffect(nom, e, retVal) {
+  if ((nom === 'f') && (e === 'x')) {
+    // ignore (f/x) caption on buff editor;
+    return;
+  }
+  if (e.indexOf('=') > 0) {
+    cummuleSpecial(nom, e, retVal);
+  } else if (e[0] === '+' || e[0] === '-') {
+    // standard token buff
+    const mod = parseInt(e);
+    const keyword = e.split('' + mod)[1];
+    // for special saves like save against fear    
+    const keywordSpec = keyword.split('_')[0]; 
+    const details = D.ALL_POSSIBILITIES[keywordSpec];
+    if (!details) {
+      warnOnce('Keyword not supported: ' + keyword);
+      return;
+    }
+    microCumule(retVal, keyword, details, nom, mod);
+  } else {
+    warnOnce('unsupported effect: nom:' + nom + '  e:' + e);
+  }  
+}
+
+function calculeUnBuff(el, retVal) {
+  if (isNotVu(el) || (el.id === 'buff_menu')) {
+    return;
+  }
+  const txt = el.textContent.trim();
+  const nomNeffects = txt.split('(');
+  if (!nomNeffects[1]) {
+    return;
+  }
+  const nom = el.dataset?.lbl || nomNeffects[0].trim();
+  const toSplit = el.dataset?.after_dices || nomNeffects[1].split(')')[0];
+  const effects = toSplit.split('/');
+  let nbSkip = 0;
+  for (const e of effects) {
+    if ((e === 'equip') || (e === 'armor')) {
+      nbSkip = 1;
+    } else if ((e === '1h') || (e === '2h')) {
+      nbSkip = 2;
+    } else if (nbSkip > 0) {
+      nbSkip--;
+    } else {
+      cummuleEffect(nom, e, retVal);
+    }
+  }
+}
+
+D.TABLE_BUFFS = {};
+D.TABLE_BUFFS_SAVES = {};
+D.TABLE_COMBAT = {};
+
+function safelyBoldText(container, targetText) {
+  if (!container || !targetText) {
+    return;
+  }
+
+  // 1. Grab raw text content securely to strip any accidental HTML injection
+  const text = container.textContent; 
+  
+  // 2. Clear the container completely
+  container.textContent = ''; 
+
+  // 3. Escape regex characters in the target phrase
+  const escapedTarget = targetText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const regex = new RegExp(`(${escapedTarget})`, 'gi');
+  
+  // 4. Split the text and rebuild the DOM safely
+  const parts = text.split(regex);
+
+  parts.forEach(part => {
+    if (part === targetText) {
+      // Build the bold element using DOM APIs
+      const strongElement = document.createElement('strong');
+      strongElement.textContent = part; // safe from XSS
+      container.appendChild(strongElement);
+    } else if (part) {
+      // Create a standard safe text node for the rest
+      const textNode = document.createTextNode(part);
+      container.appendChild(textNode);
+    }
+  });
+}
+
+function traductionHumaine(buffPart) {
+  const statVal = buffPart.split('=');
+  const nom = D.TARGET[statVal[0]];
+  if (!nom) {
+    console.warn('nom de stat invalide:', statVal[0], buffPart);
+    return null;
+  }
+  return nom + ' = ' +
+    statVal[1].replace(')', '').replaceAll('+', ' + ') + ':';
+}
+
+function afficheDes(mnu, left, nb, faces) {
+  let insertAfter = left;
+  for (let i = 0; i < nb; i++) {
+    const clone = mnu.cloneNode(true);
+    clone.classList.add('gen');
+    for (let j = 1; j <= faces; j++) {
+      const div = document.createElement('div');
+      div.textContent = j;
+      clone.appendChild(div);
+    }
+    insertAfter.after(clone);
+    insertAfter = clone;
+  }
+  return insertAfter;
+}
+
+function populateDicePopup(tokens, match, tpl) {
+  let insertAfter = tpl;
+  let deIdx = 0;
+  for (const t of tokens) {
+    const de = match[deIdx];
+    if (!de || !t.includes(de)) {
+      continue;
+    }
+    const nb_et_faces = de.split('d');
+    const nb = parseInt(nb_et_faces[0]) || 0;
+    const faces = parseInt(nb_et_faces[1]) || 0;
+    if (nb < 1 || nb > 3) {
+      console.warn('Nombre de dé invalide: ', t);
+      return;
+    }
+    if (faces < 2 || faces > 20) {
+      console.warn('Dé invalide: ', t);
+      return;
+    }
+    const txt = traductionHumaine(t);
+    if (!txt) {
+      return;
+    }
+    const clone = tpl.cloneNode(true);
+    const left = clone.querySelector('.left');
+    const mnu = clone.querySelector('.mnu');
+    left.classList.add('gen');
+    left.textContent = txt;
+    safelyBoldText(left, de);
+    insertAfter.after(left);
+    insertAfter = afficheDes(mnu, left, nb, faces);
+    deIdx++;
+  }
+  return insertAfter;
+}
+
+function updateDiceValues(dlg, el, match, tokens) {
+  const mnuOn = dlg.querySelectorAll('.on');
+  if (mnuOn.length != match.length) {
+    console.warn('dice mismatch:', mnuOn, match);
+    return;
+  }
+  let txt = tokens.join('/');
+  let dices = [];
+  for (let i = 0; i < match.length; i++) {
+    let d = mnuOn[i].textContent;
+    txt = txt.replace(match[i], d);
+    dices.push(d);
+  }
+  let doubleAdds = txt.match(/\+[0-9]+\+[0-9]+/g);
+  for (const dd of doubleAdds) {
+    const sum = dd.split('+')
+      .map(v => parseInt(v) || 0)
+      .reduce((pv, v) => pv + v, 0);
+    txt = txt.replace(dd, '+' + sum);
+  }
+  el.dataset.after_dices = txt;
+  el.dataset.dices = '🎲:' + dices.join(',');
+  el.classList.add('on');
+  setTimeout(rafraichi);
+}
+
+function popupForDices(el, match, titreDetails) {
+  const dlg = _('dicedialog');
+  _('dice_buff_ttl').textContent = titreDetails[0];
+  const tpl = _('dice_tpl');
+  for (const el of dlg.querySelectorAll('.gen')) {
+    el.remove();
+  }
+  const tokens = titreDetails[1].split(')')[0].split('/');
+  populateDicePopup(tokens, match, tpl);
+  const ok = dlg.querySelector('button');
+  ok.disabled = true;
+  dlg.addEventListener('close', function closeEvent() {
+    if (dlg.returnValue === 'ok') {
+      updateDiceValues(dlg, el, match, tokens);
+    }
+    dlg.removeEventListener('close', closeEvent);
+  });
+  dlg.showModal();
+}
+
+function detectDice(v) {
+  if (typeof(v) !== 'string') {
+    return false;
+  }
+  return v.match(/[0-9]d[0-9]+/g);
+}
+
+function bodyCls(cls) {
+  return document.body.classList.contains(cls); 
+}
+
+function notBoost(el) {
+  return el.parentElement.id !== 'boosts';
+}
+
+function startEditOneBuff(el) {
+  // reuse existing CSS logic from configure_equip to save time
+  document.body.classList.add('configure_equip');
+  // additional css condition with 'configure_buff'
+  document.body.classList.add('configure_buff');
+  D.lastEditEl = el;
+  let ttl;
+  let data = { b1: '+/-' };
+  if (el) {
+    const nomStats = el.textContent.split('(');
+    const nom = nomStats[0].trim();
+    const long = '(equip/' + nomStats[0].trim() + '/' + nomStats[1];
+    ttl = 'Édition du buff: ' + nom;
+    const tokens = tokenizeLong(long);
+    data = loadOther(tokens);
+  } else {
+    ttl = "Création d'un nouveau Buff";
+    _('equip_clear').disabled = true;
+    touch('#armor_other [data-key="nom_e"]', 500);
+  }
+  _('title_edit_equip').textContent = ttl;
+  clearValidationGroup(q('#armor_other .validation_group'));
+  setAllFields(_('edit_equip'), data);
+  setTimeout(rafraichiEditEquip);
+}
+
+function editUnBuff(el) {
+  if ( notBoost(el) || !bodyCls('edit_buffs') ) {
+    return false;
+  }
+  startEditOneBuff(el);
+  return true;
+}
+
+function detectDiceBuff(el) {
+  if (notBoost(el)) {
+    return false;
+  }
+  const titreDetails = el.textContent.split('(');
+  const match = detectDice(titreDetails[1]);
+  if (!match) {
+    return false;
+  }
+  if (el.classList.contains('on')) {
+    delete el.dataset.after_dices;
+    delete el.dataset.dices;    
+    el.classList.remove('on');
+  } else {
+    popupForDices(el, match, titreDetails);
+  }  
+  return true;
+}
+
+function calcule(table, name) {
+  let related = Object.values(table);
+  if (name) {
+    related = related.filter(v => v.details?.stat === name);
+  }
+  let retVal = 0;
+  let prefix = '';
+  let suffix = '';
+  for (let r of related) {
+    if (detectDice(r.val)) {
+      if (prefix) {
+        suffix += ' ' +r.val;
+      } else {
+        prefix = r.val;
+      }
+    } else {
+      retVal += parseInt(r.val);
+    }
+  }
+  if (prefix || suffix) {
+    return prefix + (retVal === 0 ? '' : plus(retVal)) + suffix;
+  }
+  return retVal;
+}
+
+function cumuleSave(dest, stat, specials, obj) {
+  let expandTo;
+  if (specials.length > 0) {
+    // Only to specific sub types
+    expandTo = Object.entries(dest.special)
+      .filter(e => specials.includes(e[0]))
+      .map(e => e[1]);
+  } else {
+    // To all sub types and main type
+    expandTo = [dest, ...Object.values(dest.special)];
+  }
+  // Create a new details object
+  // (so "all saves" become specific fort/reflex/will)
+  const details = structuredClone(obj.details);
+  const keyword = details.l + stat;
+  details.stat = stat;
+  // Micro accumulate to save and sub types accordingly
+  for (const to of expandTo) {
+    for (const [nom, mod] of Object.entries(obj.parts)) {
+      microCumule(to, keyword, details, nom, mod);
+    }
+  }
+}
+
+function getSaveTo(ret, obj, allSaves) {
+  let stats = null;
+  if (obj.details.stat === 'sav') {
+    stats = allSaves; // expand to all saves
+  } else if (ret[obj.details.stat]) {
+    stats = [obj.details.stat]; // specific save
+  } // else null when object is related to another non-save stat (example str)
+  return stats;
+
+}
+
+function calculeBuffsSaves(retVal) {
+  const ret = {
+    will: {
+      special: {}
+    },    
+    fort: {
+      special: {}
+    },
+    reflex: {
+      special: {}
+    }
+  }
+  const allSaves = Object.keys(ret);
+  // 1st pass: populate special sub-keys
+  for (const [k, obj] of Object.entries(retVal)) {
+    let stats = getSaveTo(ret, obj, allSaves);
+    if (!stats) {
+      continue; // stat unrelated to saving throws
+    }
+    const specials = k.split('_').slice(1);
+    for (const sp of specials) {
+      for (const stat of stats) {
+        ret[stat].special[sp] = {};
+      }
+    }
+  }
+  // 2nd pass: translate / accumulate saves
+  for (const [k, obj] of Object.entries(retVal)) {
+    let stats = getSaveTo(ret, obj, allSaves);
+    if (!stats) {
+      continue;
+    }
+    const specials = k.split('_').slice(1);
+    for (const s of stats) {
+      cumuleSave(ret[s], s, specials, obj);
+    }
+  }
+  return ret;
+}
+
+function calculeBuffShield(retVal) {
+  if (D.GROUP_ARMES_SELECTED?.typ2?.indexOf('Shield') >= 0) {
+    const g = D.GROUP_ARMES_SELECTED; 
+    let l2 = g.long2;
+    if (l2.match(/[0-9]\)$/)) {
+      l2 = l2.replace(')', 'esac)');
+    }
+    calculeUnBuff({textContent: g.lbl2 + ' ' + l2}, retVal);
+  }
+}
+
+function calculeBuffRumpy(retVal) {
+  if (!rumpyVU()) {
+    return;
+  }
+  calculeUnBuff(
+    { textContent: 'Rumpy (+2udmg/+2ltch/+2lsav)'} ,
+    retVal
+  );
+}
+
+function calculeBuffs() {
+  let retVal = {};
+  const els = qa('.on:not(#combat .on)');
+  for (let el of els) {
+    calculeUnBuff(el, retVal);
+  }
+  calculeBuffShield(retVal);
+  calculeBuffRumpy(retVal);  
+  D.TABLE_BUFFS = retVal;
+
+  // 2ieme passe pour les jets de sauvegarde
+  D.TABLE_BUFFS_SAVES = calculeBuffsSaves(retVal);
+  
+  return retVal;
+}
+
+function calculeCombat() {
+  D.TABLE_COMBAT.tab = {}
+  for (let el of qa('#combat .on')) {
+    calculeUnBuff(el, D.TABLE_COMBAT.tab);
+  }
+}
+
+function applyCombatMod(table) {
+  for (let el of qa('#combat .on')) {
+    calculeUnBuff(el, table);
+  }
+  return table;
+}
+
+// Flat Footed: AC sans Dex(si positif) ni Dodge
+function flatFootFilter(v) {
+  if (v.details.stat === 'dex_mod' && v.val >= 0) {
+    return false;
+  }
+  if (v.details.bonus === 'dodge') {
+    return false;
+  }
+  return true;
+}
+
+// Touch: AC sans Armor, Shield, Natural
+function touchACfilter(v) {
+  if (!v.details.l) {
+    return true;
+  }
+  const k = v.details.l + v.details.stat;
+  return !k.match(/^(aac|eac|esac|sac|nac|eac|pac)$/);
+}
+
+
+function rafraichiArmure() {
+  D.TABLE_AC = {};
+  microCumuleAP(D.TABLE_AC, 'Armure de base', 'Armure de base', 10);
+  D.TABLE_AC.mod = structuredClone(getStatModTbl('dex'));
+  D.TABLE_AC.mod.details.stack = 'reverse';
+  if (D.TABLE_BUFFS.maxdex) {
+    for (const [nom, mod] of Object.entries(D.TABLE_BUFFS.maxdex.parts)) {
+      const n = nom + '; max=' + mod;
+      microCumule(D.TABLE_AC, 'mod', D.TABLE_AC.mod.details, n, mod);
+    }
+  }
+  appliqueTable(D.TABLE_BUFFS, D.TABLE_AC, v => v.details?.stat?.endsWith('ac'));
+  appliqueTable(D.TABLE_COMBAT?.tab, D.TABLE_AC, v => v.details?.stat?.endsWith('ac'));
+
+  D.TABLE_TAC = {};
+  appliqueTable(D.TABLE_AC, D.TABLE_TAC, touchACfilter);
+  
+  D.TABLE_FFAC = {};
+  appliqueTable(D.TABLE_AC, D.TABLE_FFAC, flatFootFilter);
+
+  _('ac').textContent = calcule(D.TABLE_AC);
+  _('ffac').textContent = calcule(D.TABLE_FFAC);
+  _('tac').textContent = calcule(D.TABLE_TAC);
+}
+
+function toucher(tr) {
+  return parseInt(tr.children[1].textContent, 10);
+}
+
+D.UNARMED_DEFAULT = {
+  lbl: q('#unarmed_tpl .short').textContent,
+  long: q('#unarmed_tpl .long').textContent,
+  typ: _('typ_m').textContent,
+  de: '1d3',
+  dmg: 0,
+  tch: 0,
+  main: true
+}
+
+function convertArme(data, nb) {
+  const retVal = {};
+  for (const k in data) {
+    if (k.endsWith('' + nb)) {
+      retVal[k.replace('' + nb, '')] = data[k];
+    }
+  }
+  retVal.de = retVal.dice;
+  retVal.dmg = retVal.bonus ? parseInt(retVal.bonus) : 0;
+  retVal.tch = retVal.dmg;
+  retVal.main = nb === 1;
+  return retVal;
+}
+
+function getArmes() {
+  const ret = [{}, {}];
+  const s = D.GROUP_ARMES_SELECTED;
+  if (!s.typ1 || s.typ1.indexOf('N/A') >= 0) {
+    ret[0] = D.UNARMED_DEFAULT;
+  } else {
+    ret[0] = convertArme(s, 1);
+  }
+  if (!s.typ2 || s.typ2.indexOf('N/A') >= 0 || s.typ2.indexOf('Shield') >= 0) {
+    ret[1] = {
+      lbl: '',
+      de: '',
+      main: false,
+      dmg: 0,
+      tch: 0,
+    }
+  } else {
+    ret[1] = convertArme(s, 2);
+  }
+  return ret;
+}
+
+D.TYP_ATK = 'fr';
+
+// Troll Unarmed
+function trollua() {
+  const t = [...qa('#buffs .on')].filter(b => b.textContent.includes('Troll'));
+  if (t.length < 1) {
+    return false;
+  }
+  return gs()?.typ1 === 'N/A' && gs()?.typ2 === 'N/A';
+}
+
+D.CONDITIONS_ATK = {
+  fr: () => D.TYP_ATK === 'fr', // full round
+  froff: () => D.TYP_ATK?.match(/fr|offhandparry/),
+  h1: () => !trollua(),
+  h2: () => !trollua() && gs().dice2,
+  rs: () => D.CURR_FEATS.rapidshot &&
+    gs().typ1?.includes('R') &&
+    gs().nom1.match(/bow|sparkle/i),
+  rs2: () => D.CURR_FEATS.rapidshot &&
+    !gs().typ1?.includes('R') &&
+    gs().typ2?.includes('R') &&
+    gs().nom2.match(/bow|sparkle/i),
+  haste: () => D.TABLE_BUFFS.uatk,
+  bab6: () => D.PERSO.bab >= 6,  
+  bab11: () => D.PERSO.bab >= 11 ,
+  bab16: () => D.PERSO.bab >= 16,
+  itwf: () => D.CURR_FEATS.improvedtwoweaponsfighting,
+  gtwf: () => D.CURR_FEATS.greatertwoweaponsfighting,
+  stwf: () => D.CURR_FEATS.supremetwoweaponsfighting,
+  trollua
+};
+
+D.LOGIQUE_ATTAQUES = `
+h1|Main Principale
+h1 rs froff|Main Principale (Rapid Shot)
+h1 bab6 froff|Main Principale (BAB ≥ 6)
+h1 bab11 froff|Main Principale (BAB ≥ 11)
+h1 bab16 froff|Main Principale (BAB ≥ 16)
+h1 haste froff|Main Principale (Haste)
+h2 fr|Main Secondaire
+h2 rs2 fr|Main Secondaire (Rapid Shot)
+h2 bab6 itwf fr|Main Secondaire (BAB ≥ 6; Improved 2 Weapons Fighting)
+h2 bab11 gtwf fr|Main Secondaire (BAB ≥ 11; Greater 2 Weapons Fighting)
+h2 bab16 stwf fr|Main Secondaire (BAB ≥ 16; Supreme 2 Weapons Fighting)
+trollua|Troll Claw
+trollua fr|2nd Troll Claw
+trollua fr|Troll Bite
+trollua fr|Troll Rend
+`.trim().split('\n').map(l => {
+  const cNtxt = l.split('|');
+  return {
+    conditions: cNtxt[0].split(' '),
+    txt: cNtxt[1]
+  };
+});
+
+function gs() {
+  return D.GROUP_ARMES_SELECTED;
+}
+
+function isOffhandLight() {
+  const g = D.GROUP_ARMES_SELECTED;
+  if (g.manip.indexOf('2') >= 0) {
+    return false;
+  }
+  if ((g.typ2.indexOf('S') >= 0) || (g.typ2 === 'N/A')) {
+    return false;
+  }
+  if ((!g.nom2) || (!g.dice2)) {
+    return false;
+  }  
+  if ((g.dice2 === '1d3') || (g.dice2 === '1d4')) {
+    return true;
+  };
+  return g.nom2.match(D.LIGHT_WEAPON_REGEXP);
+
+}
+
+D.TROLLATK = {
+  "Troll Claw": {
+    lbl: "Troll Claw",
+    typ: SW + "Melee",
+    de: "1d6",
+    dmg: 6,
+    tch: 9,
+    main: true
+  },
+  "2nd Troll Claw": {
+    lbl: "2nd Troll Claw",
+    typ: SW + "Melee",
+    de: "1d6",
+    dmg: 6,
+    tch: 9,
+    main: false
+
+  },
+  "Troll Bite": {
+    lbl: "Troll Bite",
+    typ: SW + "Melee",
+    de: "1d6",
+    dmg: 3,
+    tch: 4,
+    main: false
+  },
+  "Troll Rend": {
+    lbl: "Troll Rend",
+    typ: SW + "Melee",
+    de: "2d6",
+    dmg: 9,
+    tch: '(when 2 claws success)',
+    main: false
+  }
+}
+
+function trollRow(logicAtk) {
+  return D.TROLLATK[logicAtk.txt];
+}
+
+function getAtkRow(logicAtk, armes) {
+  if (logicAtk.conditions.includes('trollua')) {
+    return D.TROLLATK[logicAtk.txt];
+  }
+  return logicAtk.conditions.includes('h2') ? armes[1] : armes[0];
+}
+
+function applyBABmod(conditions, retVal) {
+  const babC = conditions.filter(c => c.startsWith('bab'))[0];
+  if (!babC) {
+    return;
+  }
+  const nb = parseInt(babC.replace('bab', ''));
+  const malus = 1 - nb; // BAB6 = -5, BAB11 = -10, etc...
+  const atkNb = 1 + (malus / -5);
+  const nom = atkNb + 'e attaque (BAB≥' + nb + ')';
+  microCumuleAP(retVal, 'utch', nom, malus);
+}
+
+function getWeaponTchTbl(w) {
+  const retVal = {};
+  const mod = w.tch || (w.masterwork ? 1 : 0);
+  microCumuleAP(retVal, 'eweap', w.lbl, mod);
+  appliqueTable(D.TABLE_BUFFS, retVal, v => (v.details.stat === 'weap'));
+  return retVal;  
+}
+
+function rapidShotTchMod(retVal, w) {
+  if (!D.CURR_FEATS.rapidshot || !w.incr || !D.CONDITIONS_ATK.froff()) {
+    return;
+  }
+  microCumuleAP(retVal, 'utch', 'Rapid Shot', -2);
+}
+
+function pointBlankShotMod(retVal, w) {
+  if (!D.CURR_FEATS.pointblankshot || !w.incr || _('distance').value > 30) {
+    return;
+  }
+  microCumuleAP(retVal, 'distance', 'Point Blank Shot (dist<30ft.)', 1);
+}
+
+function weaponFocusMod(retVal, w) {
+  let nom = '';
+  for (const el of qa('[id^="weaponFocus"]')) {
+    if (el.value && w.lbl.match(new RegExp(el.value, 'i'))) {
+      nom = 'Weapon Focus: ' + el.value;
+    }
+  }
+  if (nom) {
+    microCumuleAP(retVal, 'utch', nom, 1);
+  }
+}
+
+function zenArcheryMod(retVal, w) {
+  if (!D.CURR_FEATS.zenarchery || !w.incr || !w.nom.match(/bow/i)) {
+    return;
+  }
+  const mod = getStatModTbl('wis');
+  const nom = 'Zen Archery (' + Object.keys(mod.parts)[0] + ')';
+  microCumule(retVal, 'mod', mod.details, nom, mod.val);
+}
+
+D.FEAT_TCH_MODS = {
+  pointblankshot: pointBlankShotMod,
+  rapidshot: rapidShotTchMod,
+  weaponfocus: weaponFocusMod,
+  zenarchery: zenArcheryMod
+}
+
+function applyFeatTchMod(retVal, w) {
+  for (const feat of Object.keys(D.CURR_FEATS)) {
+    D.FEAT_TCH_MODS[feat]?.(retVal, w);
+  }
+}
+
+function applyDistanceMod(retVal, w) {
+  if (!w.incr) {
+    return; // not range/thrown
+  }
+  const nbIncr = Math.floor(_('distance').value / w.incr);
+  const maxIncr = w.typ.match(/range/i) ? 10 : 5;
+  if (nbIncr > maxIncr) {
+    retVal.OUT_OF_RANGE = { w, max: w.incr * maxIncr };
+    return;
+  }
+  const malus = nbIncr * -2;
+  const nom = '(dist:' + _('distance').value +  'ft. / incr:' + w.incr + 'ft.) \u00D7 -2 =';
+  microCumuleAP(retVal, 'distance', nom, malus);
+}
+
+function apply2WeaponsTchMod(retVal, w) {
+  if (!D.ARMES?.[1]?.lbl) {
+    return;
+  }
+  let nom, mod;
+  if (D.CURR_FEATS.twoweaponsfighting) {
+    nom = 'Two Weapons Fighting';
+    if (isOffhandLight()) {
+      nom += ': light';
+      mod = -2;
+    } else {
+      nom += ': medium';
+      mod = -4;
+    }
+  } else if (w.main) {
+    nom = 'Malus main principale';
+    mod = -6;
+  } else {
+    nom = 'Malus main secondaire';
+    mod = -10;
+  }
+  microCumuleReverse(retVal, 'Malus deux armes', nom, mod);  
+}
+
+function applySmiteEvilTchMod(retVal) {
+  if (!q('.vu .smite.on') || (D.STATS.cha.mod < 1)) {
+    return;
+  }
+  microCumuleAP(retVal, 'Smite Evil', 'Charisme', D.STATS.cha.mod);
+}
+
+function generateTouchTbl(l, armes) {
+  const offHand = l.conditions.includes('h2');
+  const w = armes[offHand ? 1 : 0];
+  const retVal = getWeaponTchTbl(w);
+  if (w.typ.match(/M/)) {
+    Object.assign(retVal, structuredClone(D.TABLE_COMBAT.melee));
+  } else {
+    Object.assign(retVal, structuredClone(D.TABLE_COMBAT.range));    
+  }
+  const def = 'def' + ((offHand) ? 'o' : 'm'); // defending
+  appliqueTable(D.TABLE_COMBAT.tab, retVal, v => (
+    v.details.stat === 'tch' || v.details.stat === def
+  ));
+  applyDistanceMod(retVal, w);
+  applyBABmod(l.conditions, retVal);
+  apply2WeaponsTchMod(retVal, w);  
+  applyFeatTchMod(retVal, w); 
+  applySmiteEvilTchMod(retVal);
+  return retVal;
+}
+
+function getWeaponDmgTbl(w) {
+  let sz = D.TABLE_BUFFS.basesize?.val || 0;
+  if (D.TABLE_BUFFS.zsiz) {
+    sz += D.TABLE_BUFFS.zsiz.val;
+  }
+  let d = w.de;  
+  if (sz < -1) {
+    warnOnce('Size too small, default to tiny' + sz);
+    sz = -2;
+  }
+  const retVal = {};
+  if (sz > 2) {
+    warnOnce('Size too big, default to huge' + sz);
+    sz = 2;
+  }
+  if (sz > 0) {
+    for (let i = 0; i < sz; i++) {
+      d = D.ENLARGE_DMG_MAP[d];
+    }
+    microCumuleDice(retVal, "Dé(s) de l'arme", 'Size: ' + D.SIZE_NAME[sz], d);
+  } else if (sz < 0) {
+    for (let i = 0; i > sz; i--) {
+      d = D.REDUCE_DMG_MAP[d];
+    }
+    microCumuleDice(retVal, "Dé(s) de l'arme", 'Size: ' + D.SIZE_NAME[sz], d);
+  }
+  microCumuleDice(retVal, "Dé(s) de l'arme", w.lbl, w.de);
+  if (w.dmg) {
+    microCumuleAP(retVal, 'eweap', w.lbl, w.dmg);
+  }
+  appliqueTable(D.TABLE_BUFFS, retVal, v => (v.details.stat === 'weap'));
+  return retVal;
+}
+
+function applyStrDmgMod(retVal, w) {
+  if (w.typ?.match(/R/) && !w?.comp) {
+    return; // non-composite range weapon, no str mod
+  }
+  retVal.mod = structuredClone(getStatModTbl('str'));
+  if (w.comp) {
+    // composite bow = capped
+    retVal.mod.details.stack = 'reverse';
+    microCumuleAP(retVal, 'mod', 'Bonus composite max.', w.comp);
+  } else if (!w.main) {
+    // offhand = x0.5
+    retVal.mod.details.stack = true;
+    microCumuleAP(retVal, 'mod', 'Multiplicateur Main Secondaire', 'x0.5');
+  } else if (w.long.startsWith('(2h')) {
+    // 2 hands = x1.5
+    retVal.mod.details.stack = true;
+    microCumuleAP(retVal, 'mod', 'Multiplicateur 2 Mains', 'x1.5');
+  }
+}
+
+function applyPowerAttack(retVal, w) {
+  if (!retVal.pwa) {
+    return;
+  }
+  retVal.pwa.details.stack = true;
+  if (D.TYP_ATK === 'leapattack') {
+    if (w.long.startsWith('(2h')) {
+      // 2 hands + leap attack = x3
+      microCumuleAP(retVal, 'pwa', 'Multiplicateur Leap Attack 2 Mains', 'x3');
+    } else {
+      // 1hand + leap attack = x2
+      microCumuleAP(retVal, 'pwa', 'Multiplicateur Leap Attack', 'x2');
+    }
+  } else {
+    if (!w.main) {
+      // offhand = x0.5
+      microCumuleAP(retVal, 'pwa', 'Multiplicateur Main Secondaire', 'x0.5');
+    } else if (w.long.startsWith('(2h')) {
+      // 2 hands = x1.5
+      microCumuleAP(retVal, 'pwa', 'Multiplicateur 2 Mains', 'x1.5');
+    }
+  }
+}
+
+function specialRumpyDmg(retVal) {  
+  if (q('.vu .holy.on')) {
+    microCumuleDice(retVal, "Rumpy Holy vs Evil", "Rumpy Holy vs Evil", "+2d6");
+  }
+}
+
+function specialPaladinDmg(retVal) {
+  if(q('.vu .smite.on')){
+    microCumuleAP(retVal, 'Smite Evil', 'Niveau', D.PERSO.lvl);
+  }
+}
+
+function applyDuskbladeDmg(retVal) {
+  if (!duskbladeVU()) {
+    return;
+  }
+  if (q('.shocking.on')) {
+    microCumuleDice(retVal, "Duskblade", "Shocking Grasp", "+5d6⚡");
+  }
+  if (q('.duskheal.on')) {
+    microCumuleDice(retVal, "Duskblade", "Healing", "+1d8+5⛨");
+  }
+  if (q('.chill.on')) {
+    microCumuleDice(retVal, "Duskblade", "Chill", "+1d6❄️");
+  }
+  if (q('.baleful.on')) {
+    microCumuleDice(retVal, "Duskblade Swift", "Blade of Blood", "+3d6🩸");
+  }
+}
+
+function applySpecialDmg(retVal, w) {
+  if (w.specDmg) {
+    microCumuleDice(retVal, "Special", "Special", w.specDmg);
+  }
+  if (w.nom === 'Rumpy') {
+    specialRumpyDmg(retVal);
+  }
+  specialPaladinDmg(retVal);
+}
+
+function applySneakAttack(retVal) {
+  if (D.CURR_FEATS.sneak && D.TABLE_COMBAT?.tab?.sneak) {
+    const dice = q('#sneak_dice .on').textContent;
+    microCumuleDice(retVal, "Sneak Attack", 'Dés de sneak', '+' + dice);
+  }
+}
+
+function generateDmgTbl(l, armes) {
+  const offHand = l.conditions.includes('h2');
+  const dmgKey = offHand ? 'dmg2' : 'dmg1';
+  if (D.TABLE_COMBAT[dmgKey]) {
+    return D.TABLE_COMBAT[dmgKey];
+  }
+  // Bonus Arme (dé + magique)
+  // Bonus Force + Facteur multiplicatif 2h / offhand  
+  //   + Composite Cap 
+  // Bonus tous les buffs de dmg
+  // Bonus Power Attack  + Facteur multiplicatif 2h / offhand
+  // Sneak Attack
+  const w = armes[offHand ? 1 : 0];
+  const retVal = getWeaponDmgTbl(w);
+  applyStrDmgMod(retVal, w);
+  appliqueTable(D.TABLE_BUFFS, retVal, (v => v.details.stat === 'dmg'));
+  const def = 'def' + ((offHand) ? 'o' : 'm'); // defending
+  appliqueTable(D.TABLE_COMBAT.tab, retVal, v => (
+    v.details.stat === 'dmg'
+     || v.details.stat === def
+     || v.details.stat === 'pwa'
+     || v.details.stat === 'weap'
+  ));
+  applyPowerAttack(retVal, w);
+  applySpecialDmg(retVal, w);
+  applyDuskbladeDmg(retVal, w);
+  applySneakAttack(retVal);
+  
+  D.TABLE_COMBAT[dmgKey] = retVal;
+  return retVal;
+}
+
+function afficheOutOfRange(obj, done, table) {
+  const key = obj.w.main ? 'main' : 'off';
+  if (done[key]) {
+    return;
+  }
+  const row = tr([ obj.w.lbl, 'hors de portée' ]);
+  const td = row.children[1];
+  td.colSpan = 2;
+  td.className = 'out_of_range';
+  table.appendChild(row);
+  done[key] = true;
+}
+
+function updateRevertHand(src, dest) {
+  dest.textContent = '';
+  dest.appendChild(revertH());
+  dest.append(src.textContent.replace(D.SUB_ICONS.h, ''));
+}
+
+function updateCell(src, dest) {
+  if (dest.className !== src.className) {
+    dest.className = src.className;
+  }
+  if (dest.colSpan !== src.colSpan) {
+    dest.colSpan = src.colSpan;
+  }
+  if (dest.rowSpan !== src.rowSpan) {
+    dest.rowSpan = src.rowSpan;
+  }  
+  if (dest.textContent !== src.textContent) {
+    if (src.dataset.hand === 'h2') {
+      updateRevertHand(src, dest);
+    } else {
+      dest.textContent = src.textContent;
+    }
+  }
+}
+
+function updateRow(src, dest) {
+  const sourceCells = src.cells;
+  const targetCells = dest.cells;
+  dest.className = src.className;
+  while (targetCells.length < sourceCells.length) {
+    dest.insertCell();
+  }
+  while (targetCells.length > sourceCells.length) {
+    dest.deleteCell(-1);
+  }
+  for (let c = 0; c < sourceCells.length; c++) {
+    const sourceCell = sourceCells[c];
+    const targetCell = targetCells[c];
+    updateCell(sourceCell, targetCell);
+  }
+}
+
+function updateTable(src, dest) {
+  const sourceRows = src.rows;
+  const targetRows = dest.rows;
+  while (targetRows.length < sourceRows.length) {
+    dest.insertRow();
+  }
+  while (targetRows.length > sourceRows.length) {
+    dest.deleteRow(-1);
+  }
+  for (let r = 0; r < sourceRows.length; r++) {
+    const sourceRow = sourceRows[r];
+    const targetRow = targetRows[r];
+    updateRow(sourceRow, targetRow);
+  }
+}
+
+function rafraichiArmes() {
+  D.ARMES = getArmes();
+  D.ATK_TBL = D.LOGIQUE_ATTAQUES.filter(l =>
+    l.conditions.reduce((p, v) => p && D.CONDITIONS_ATK[v](), true)
+  ).map(l => ({ ...l,
+    tch: generateTouchTbl(l, D.ARMES),
+    dmg: generateDmgTbl(l, D.ARMES)
+  }));
+  const table = document.createElement('table');
+  const outOfRangeDone = {};
+  for (const a of D.ATK_TBL) {    
+    if (a.tch.OUT_OF_RANGE) {
+      afficheOutOfRange(a.tch.OUT_OF_RANGE, outOfRangeDone, table);
+      continue;
+    }
+    const r = getAtkRow(a, D.ARMES); 
+    let tch = calcule(a.tch);
+    let dmg = calcule(a.dmg);
+    let hand = a.conditions[0];
+    if (hand === 'trollua') {
+      tch = r.tch;
+      dmg = r.de + ' +' + r.dmg;
+      hand = r.lbl;
+    }
+    afficheLigne(r.lbl, dmg, tch, table, hand);
+  }
+  updateTable(table, q('#attaques table'));
+}
+
+function st(mot) {
+  return allStats.hasOwnProperty(mot) ? allStats[mot] : 0;
+}
+
+function tr(tds) {
+  const tr = document.createElement('tr');
+  for (const m of tds) {
+    const td = document.createElement('td');
+    td.textContent = m;
+    tr.appendChild(td);
+  }
+  return tr;
+}
+
+function tchTxt(tch) {
+  if (tch >= 0) {
+    return '+' + tch;
+  } else {
+    return tch;
+  }
+}
+
+function dmgTxt(de, dmg) {
+  if (dmg > 0) {
+    return de + '+' + dmg;
+  } else if (dmg < 0) {
+    return de + dmg;
+  } else {
+    return de;
+  }
+}
+
+function afficheLigne(lbl, dmg, tch, table, hand) {
+  if (hand !== table.dataset.hand) {
+    const row = tr([
+      lbl,
+      tchTxt(tch),
+      dmg
+    ]);
+    row.cells[0].dataset.hand = hand;
+    if (hand.match(/troll/i)) {
+      row.className = 'troll';
+    }
+    table.appendChild(row);
+    table.dataset.lastRow = table.rows.length - 1;
+    table.dataset.hand = hand;
+  } else {
+    table.appendChild(tr([
+      tchTxt(tch)
+    ]));
+    const cells = table.rows[table.dataset.lastRow].cells;
+    cells[0].rowSpan = (cells[0].rowSpan || 1) + 1;
+    cells[2].rowSpan = cells[0].rowSpan;    
+  }
+}
+
+function readEl(el) {
+  if (el.classList.contains('mnu')) {
+    // note: fonctionne seulement pour option simple, pas multiples
+    const selected = el.querySelector('.on');
+    return selected && selected.textContent;
+  }
+  if ((el.tagName === 'INPUT') || (el.tagName === 'SELECT')) {
+    return el.value;
+  }
+  if (el.classList.contains('on')) {
+    return el.textContent;
+  }
+  if (el.classList.contains('line')) {
+    const input = el.querySelector('input');
+    return input && input.value;
+  }
+  return null;
+}
+
+function checkOneVis(v, data) {
+  const notLike = v.split('!~');
+  if (notLike.length > 1) {
+    const val = data[notLike[0]];
+    return val && ( val.indexOf(notLike[1].replaceAll("'", '')) < 0 );
+  }
+  const like = v.split('~');
+  if (like.length > 1) {
+    const val = data[like[0]];
+    return val && ( val.indexOf(like[1].replaceAll("'", '')) >= 0 );
+  }
+  if (v[0] === '!')  {
+    return !data[v.slice(1)];
+  } else {
+    return data[v];
+  }
+}
+
+function visRequirement(vis, data) {
+  const ou = vis.split('|');
+  const et = vis.split('&');
+  if (ou.length > et.length) {
+    for (const v of ou) {
+      if (checkOneVis(v, data)) {
+        return true;
+      }
+    }
+    return false;
+  } else {
+    for (const v of et) {
+      if (!checkOneVis(v, data)) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+function lectureChamps(edit) {
+  const data = {};
+  for (const el of edit.querySelectorAll('[data-key]')) {
+    if (el.checkVisibility()) {
+      data[el.dataset.key] = readEl(el);
+    }    
+  }
+  if (bodyCls('configure_buff')) {
+    data.typEquip = _('autre').textContent;
+  }
+  return data;
+}
+
+function maxBuffArmor(el, data) {
+  if (data.typEquip?.includes('Armure') && el.classList.contains('line')) {
+    return !el.children[0]?.dataset.key.match(/b[5-9]/);
+  }
+  return true;
+}
+
+function ajusteUnChampVisible(el, data) {
+  if (maxBuffArmor(el, data) && visRequirement(el.dataset.vis, data)) {
+    if (!el.classList.contains('vis')) {
+      el.classList.add('vis');
+      return true;
+    }      
+  } else {
+    if (el.classList.contains('vis')) {
+      el.classList.remove('vis');
+      return true;
+    }
+  }
+  return false;
+}
+
+function ajusteChampsVisibles(edit, data) {
+  let changement = false;
+  for (const el of edit.querySelectorAll('[data-vis]')) {
+    if (ajusteUnChampVisible(el, data)) {
+      changement = true;
+    }
+  }
+  return changement;
+}
+
+D.VALIDATION_FN_REGEXP = [
+  /^bab=lvl$/,
+  /^basestr=[1-9][0-9]?$/,
+  /^basedex=[1-9][0-9]?$/,
+  /^basecon=[1-9][0-9]?$/,
+  /^basecha=[1-9][0-9]?$/,
+  /^baseint=[1-9][0-9]?$/,
+  /^basewis=[1-9][0-9]?$/,
+  /^basesize=1$/,
+  /^hp=\+[1-9][0-9]*$/,
+  /^hp=\+[1-9][0-9]*\*lvl$/,
+  /^hp=\+[1-3]d[2-8](?:\+[0-9]+)$/,
+  /^hp=\+[1-3]d1[0,2](?:\+[0-9]+)$/,
+  /^hp=\+[1-3]d20(?:\+[0-9]+)$/
+];
+Object.entries(D.ALL_POSSIBILITIES)
+  .filter(v => ['sav', 'will', 'reflex', 'fort'].includes(v[1].stat))
+  .map(v => new RegExp('^\\+[1-9][0-9]?' + v[0] + '(_[a-zA-Z]+)+$'))
+  .forEach(v => D.VALIDATION_FN_REGEXP.push(v));
+
+function validateFN(el) {
+  if ((el.tagName !== 'INPUT') || !el.dataset?.key?.startsWith('fn')) {
+    return true;
+  }
+  const v = el.value;  
+  for (const regexp of D.VALIDATION_FN_REGEXP) {
+    if (v.match(regexp)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function valideUnGroupe(group) {
+  const retVal = {
+    valid: true,
+    changement: false
+  }
+  for (const el of group.querySelectorAll('[data-ltitle]')) {
+    if (!el.checkVisibility() || el.classList.contains('optionel')) {
+      continue;
+    }
+    if (readEl(el) && validateFN(el)) {
+      if (el.classList.contains('invalid')) {
+        el.classList.remove('invalid');
+        retVal.changement = true;
+      }
+    } else {
+      retVal.valid = false;
+      if (!el.classList.contains('invalid')) {
+        el.classList.add('invalid');
+        retVal.changement = true;
+      }
+    }
+  }
+  if (retVal.valid) {
+    group.classList.remove('invalid');
+  } else {
+    group.classList.add('invalid');
+  }
+  return retVal;
+}
+
+function valideGroupes(edit) {
+  let toutValid = true;
+  let changement = false;
+  for (const el of edit.querySelectorAll('.validation_group')) {
+    const { valid, change } = valideUnGroupe(el);
+    if (change) {
+      changement = true;
+    }
+    if (!valid) {
+      toutValid = false;
+    }
+  }
+  if (!toutValid) {
+    _('equip_ok').disabled = true;
+  } else {
+    _('equip_ok').disabled = false;
+  }
+  return changement;
+}
+
+function listeArmes(el, manip, typ) {
+  if (!manip || !typ) {
+    return;
+  }
+  const filterParts = [];
+  let lookup = D.WEAPONS_LOOKUP;
+  if (typ.indexOf('Shield') >= 0) {    
+    filterParts.push('S');
+    lookup = D.ARMOR_LOOKUP;
+  } else {
+    if (manip.indexOf('2 Mains') >= 0) {
+      filterParts.push('2H');
+    } else {
+      filterParts.push('1H');
+    }
+    // Next line will add M for Melee, R for Range or T for Throw in the filter parts
+    filterParts.push(typ.match(/[MRT]/)?.[0]);
+  }
+  const newFilter = filterParts.join('-');
+  if (el.dataset.filter === newFilter) {
+    return;
+  }
+  el.dataset.filter = newFilter;
+  const ret = lookup.filter((v) => {
+    for (p of filterParts) {
+      if (v[0].indexOf(p) < 0) {
+        return false;
+      }
+    }
+    return true;
+  }).map(arr => arr[1]).sort();
+  fillDatalist(ret, el);
+}
+
+function autoMain(el, nb) {
+  const val = el.value;
+  const obj = D.WEAPONS_MAP[val] || D.ARMOR_MAP[val];
+  if (!obj) { 
+    return;
+  }
+  const valGroup = el.closest('.validation_group');
+  if (!valGroup) {
+    return;
+  }
+  setField(valGroup, 'qual' + nb, 'Normale', true); 
+  setField(valGroup, 'dice' + nb, obj.dice);
+  setField(valGroup, 'incr' + nb, obj.increment && obj.increment.split(' ')[0]);  
+  setField(valGroup, 'shield' + nb, obj.ac && ('+' + obj.ac));
+  setField(valGroup, 'maxdex' + nb, obj.maxdex);
+  if (!isNaN(obj.maxdex) && obj.maxdex !== 'N/A') {
+    setField(valGroup, 'malusTch' + nb, '-2');
+  } else {
+    setField(valGroup, 'malusTch' + nb, 'N/A');
+  }
+}
+
+function autoArmor(obj, valGroup) {
+  setField(valGroup, 'qual', 'Normale', true);
+  setField(valGroup, 'armor', plus(obj.ac));
+  setField(valGroup, 'maxdex', plus(obj.maxdex));
+}
+
+function autoOther(str, _valGroup) {
+  const tokens = tokenizeLong(str);
+  const data = loadOther(tokens);
+  clearValidationGroup(q('#armor_other div[data-vis="nom_e"]'));
+  setAllFields(_('edit_equip'), data);
+}
+
+function autoEquip(el) {
+  const valGroup = el.closest('.validation_group');
+  if (!valGroup) {
+    return;
+  }
+  const val = el.value;
+  if (D.ARMOR_MAP[val]) {
+    autoArmor(D.ARMOR_MAP[val], valGroup);
+  } else if (D.EQUIP_MAP[val]) {
+    autoOther(D.EQUIP_MAP[val], valGroup);
+  }
+}
+
+function autoMainPrincipale(el) {
+  autoMain(el, 1);
+}
+
+function autoMainSecondaire(el) {
+  autoMain(el, 2);
+}
+
+function dbgCHK(el) {
+  if (el.classList.contains('debugme')) {
+    debugger;
+  }
+}
+
+function setSelectOption(el, val) {
+  const opts = el.querySelectorAll('options');
+  el.value = val;
+  let found = false;
+  for (let i = 0; !found && i < opts.length; i++) {
+    if (opts[i].value === val) {      
+      el.selectedIndex = i;
+      found = true;
+    }
+  }
+  if (!found) {
+    el.dataset.toselect = val;
+  }
+  return found;
+}
+
+function setFieldDirect(el, val, onlyIfNotSet) {
+  if (onlyIfNotSet && readEl(el)) {
+    return;
+  }
+  if (el.tagName === "INPUT") {
+    el.value = val;
+  } else if (el.tagName === "SELECT") {
+    setSelectOption(el, val);
+  } else if (el.classList.contains('mnu')) {
+    if (el.dataset.key === 'maxdex' && val === '+0') {
+      val = '0';
+    }
+    for (let child of el.children) {
+      if ((child.textContent === val) || (child.textContent === 'n/a' && !val)) {
+        child.classList.add('on');
+      } else {
+        child.classList.remove('on');
+      }
+    }
+  } else if (el.classList.contains('tgl')) {
+    if (val) {
+      el.classList.add('on');
+    } else {      
+      el.classList.remove('on');
+    }
+  }
+}
+
+function setField(parent, key, val, onlyIfNotSet) {
+  const el = parent.querySelector('[data-key="' + key + '"]');
+  if (!el) {
+    return;
+  }
+  setFieldDirect(el, val, onlyIfNotSet);
+}
+
+function setAllFields(parent, data) {
+  for (let key in data) {
+    setField(parent, key, data[key]);
+  }
+}
+
+const autoComplete = {
+  autoMainPrincipale,
+  autoMainSecondaire,
+  autoEquip
+}
+
+function listeMainPrincipale(el, data) {
+  listeArmes(el, data.manip, data.typ1);
+}
+
+function listeMainSecondaire(el, data) {
+  listeArmes(el, data.manip, data.typ2);
+}
+
+function listeArmures(el, _data) {
+  const ret = D.ARMOR_LOOKUP.filter(
+    v => v[0] === 'A'
+  ).map(arr => arr[1]).sort();
+  fillDatalist(ret, el);
+}
+
+function listeAutres(el, _data) {
+  fillDatalist(Object.keys(D.EQUIP_MAP), el);
+}
+
+function listeEquip(el, data) {
+  if (bodyCls('configure_buff')) {    
+    // TODO: maybe hardcode predefined list
+    return;
+  }
+  if (data.typEquip.indexOf('Armure') >= 0) {
+    listeArmures(el, data);
+  } else {
+    listeAutres(el, data);
+  }  
+}
+
+const filtres = {
+  listeMainPrincipale,
+  listeMainSecondaire,
+  listeEquip
+}
+
+function rafraichiRecherches(edit, data) {
+  for (const el of edit.querySelectorAll('datalist')) {
+    if (!el.parentNode.checkVisibility() || !el.id || !filtres[el.id]) {
+      continue;
+    }
+    filtres[el.id](el, data);
+  }
+}
+
+function rafraichiEditEquip() {
+  const edit = _('edit_equip');
+  if (!edit.checkVisibility()) {
+    return false;
+  }  
+  // Données
+  const data = lectureChamps(edit);
+  // Visibilité des champs
+  let changement = ajusteChampsVisibles(edit, data);
+  // Validation
+  if (valideGroupes(edit, data)) {
+    changement = true;
+  }
+  // Mise à jour liste de recherche automatique
+  rafraichiRecherches(edit, data);
+  if (rafraichiTPL()) {
+    changement = true;
+  }
+  if (changement) {
+    setTimeout(rafraichiEditEquip);
+  }
+  return true;
+}
+
+function autoSave() {
+  let saveData = lsGet('dnd');
+  const newSave = saveAll().join('\n');
+  if (saveData !== newSave) {
+    lsSet('dnd', newSave);
+    _('savedData').textContent = newSave;
+  }
+}
+
+function scheduleAutoSave() {
+  if (D.AUTO_SAVE_TIMEOUT) {
+    clearTimeout(D.AUTO_SAVE_TIMEOUT);
+  }
+  D.AUTO_SAVE_TIMEOUT = setTimeout(autoSave, 777);
+}
+
+function rafraichiFeats() {
+  for (const f of qa('#feats>.tgl')) {
+    const featName = getFeatName(f.textContent);
+    D.CURR_FEATS[featName] = f.classList.contains('on');
+  }
+}
+
+function rafraichi() {
+  if (rafraichiEditEquip()) {
+    return;
+  }
+
+  // Rafraichi VUs et templates avant les stats
+  rafraichiVU();
+  rafraichiTPL();
+  rafraichiFeats();
+
+  // Rafaichi toutes les stats en fonction des buffs etc
+  compteBuffs();
+  calculeBuffs(); // excludes combat tab
+  update();
+  calculeCombat();
+  rafraichiArmure();
+  rafraichiArmes();
+
+  // Rafraichi VUs et templates à nouveau après les stats
+  rafraichiVU();
+  rafraichiTPL();
+
+  scheduleAutoSave();
+}
+
+function compteBuffs() {
+  const nb = qa('#buffs .on').length;
+  const buff_menu = _('buff_menu');
+  const txt = 'Buffs (' + nb + ')';
+  if (buff_menu.textContent !== txt) {
+    buff_menu.textContent = txt;
+  }
+}
+
+function toggleEditBuffs() {
+  document.body.classList.toggle('edit_buffs');
+}
+
+D.lastEditEl = null;
+
+
+function editBuffs() {
+  toggleEditBuffs();
+}
+
+function createBoost(nom, parenthesis, on, afterDices, dices) {
+  const div = document.createElement('div');
+  div.textContent = nom;
+  div.className = 'tgl' + (on ? ' on' : '');  
+  const span = document.createElement('span');
+  span.textContent = parenthesis;  
+  div.appendChild(span);
+  if (afterDices) {
+    div.dataset.after_dices = afterDices;
+    div.dataset.dices = dices;
+  }
+  q('#boosts .filler').before(div);
+}
+
+function updateBoost(nom, parenthesis) {
+  const el = D.lastEditEl;
+  if (!el) {
+    return;
+  }
+  el.firstChild.nodeValue = nom;
+  el.lastChild.textContent = parenthesis;
+}
+
+function offHandParryVU() {
+  // Need feat enabled and melee weapon equipped in 2nd hand
+  return D.CURR_FEATS?.offhandparry && gs()?.typ2?.match(/M/);
+}
+
+function leapAttackVU() {
+  // Need feat enabled and melee weapon equipped in 1st hand
+  return D.CURR_FEATS?.leapattack && gs()?.typ1?.match(/M/);
+}
+
+function duskbladeVU() {
+  return D.CURR_FEATS?.duskbladechanneling && (D.TYP_ATK !== 'fr');
+}
+
+function featVU(el) {  
+  const featName = el.dataset.vu.replace('feat ', '');
+  return D.CURR_FEATS[featName];
+}
+
+D.WARN_DONE = {};
+
+function warnOnce(txt, ...rest) {
+  if (!D.WARN_DONE[txt]) {
+    D.WARN_DONE[txt] = true;
+    console.warn(txt, ...rest);
+  }
+}
+
+function todoVU(el) {
+  warnOnce('Méthode non implémentée pour ' + el.dataset.vu, el);
+  return false;
+}
+
+function armeVU(_el, arr, nb) {
+  const lbl = D.GROUP_ARMES_SELECTED['lbl' + nb];
+  return lbl && lbl.toLowerCase().indexOf(arr[1]) >= 0;
+}
+
+function principaleVU(el, arr) {
+  return armeVU(el, arr, 1);
+}
+
+function secondaireVU(el, arr) {
+  return armeVU(el, arr, 2);
+}
+
+function armeDeJetVU(_el, _arr) {
+  const s = D.GROUP_ARMES_SELECTED;
+  return s.typ1?.match(/[R|T]/) || s.typ2?.match(/[R|T]/);
+}
+
+function armeDeMeleeVU(_el, _arr) {
+  const s = D.GROUP_ARMES_SELECTED;
+  return s.typ1 === 'N/A' || s.typ1?.match(/[M]/) || s.typ2?.match(/[M]/);
+}
+
+function rumpyVU() {
+  const s = D.GROUP_ARMES_SELECTED;
+  return s && s.nom1 === 'Rumpy';
+}
+
+function paladinVU() {
+  return D.CURR_FEATS?.paladinpowers && (D?.TYP_ATK !== 'fr');
+}
+
+// Fonctions de controle de la visibilite spéciales
+D.VU = {
+  feat: featVU,
+  rumpy: rumpyVU,
+  offhandparry: offHandParryVU,
+  principale: principaleVU,
+  secondaire: secondaireVU,
+  armedejet: armeDeJetVU,
+  armedemelee: armeDeMeleeVU,
+  leapattack: leapAttackVU,
+  duskblade: duskbladeVU,
+  notfr: () => D?.TYP_ATK !== 'fr',
+  paladinspecials: paladinVU
+}
+
+function select1stAvailOpt(el) {
+  if (el.classList.contains('on') && !el.classList.contains('tgl')) {
+    // special case, must reset to 1st available option
+    touch(el.parentNode.firstElementChild, 1);
+  }
+}
+
+function rafraichiUnVU(el, arr) {
+  let changement = false;
+  const vu = D.VU[arr[0]];
+  if (!vu) {
+    return todoVU(el);
+  }
+  if (vu(el, arr)) {
+    if (!el.classList.contains('vu')) {
+      changement = true;
+      el.classList.add('vu');
+    }    
+  } else {
+    if (el.classList.contains('vu')) {
+      changement = true;
+      el.classList.remove('vu');
+      select1stAvailOpt(el);
+    }
+  }
+  return changement;
+}
+
+function rafraichiVU() {
+  let changement = false;
+  for (let el of qa('[data-vu]')) {
+    const arr = el.dataset.vu.split(' ');
+    if (rafraichiUnVU(el, arr)) {
+      changement = true;
+    }
+  }
+  return changement;
+}
+
+function eachNb(max) {
+  let n = parseInt(max);
+  if (!n) {
+    return [];
+  }
+  return Array.from({ length: n }, (_, i) => String(i + 1));
+}
+
+function eachBABmax5() {
+  return eachNb(D.PERSO.bab > 5 ? 5 : D.PERSO.bab);
+}
+
+function eachBAB() {
+  return eachNb(D.PERSO.bab);
+}
+
+function eachInputs(sel) {
+  return [...qa(sel)].map(i => i.value).filter(i => i);
+}
+
+function eachFavoredEnnemy() {
+  return eachInputs('input[id^="favoredennemy"]');
+}
+
+function eachDefending(nb) {
+  return eachNb(parseInt(D.GROUP_ARMES_SELECTED['bonus' + nb]));
+}
+
+function eachBonus() {
+  return Object.values(D.BONUS).sort();
+}
+
+function eachTarget(el) {
+  const line = el.closest('.line');
+  const typbEl = line.querySelector('[data-key^="typb"]');
+  const typb = typbEl.value;
+  return D.STATS_NAME_PER_BONUS_NAME[typb] || [];
+}
+
+D.TPL = {
+  eachFavoredEnnemy,
+  eachBAB,
+  eachBABmax5,
+  eachDefending1: () => eachDefending(1),
+  eachDefending2: () => eachDefending(2),
+  eachBonus,
+  eachTarget
+}
+
+function todoTPL(el) {
+  warnOnce('Méthode non implémentée pour ' + el.dataset.tpl, el);
+}
+
+function selectGoodOption(el) {    
+  const select = el.closest('select');  
+  if (!select.dataset.toselect) {
+    select.selectedIndex = 0;  
+    return true;
+  }
+  const opts = select.querySelectorAll('option');
+  for (let i = 0; i < opts.length; i++) {
+    if (opts[i].value === select.dataset.toselect) {      
+      delete select.dataset.toselect;
+      select.selectedIndex = i;
+      return true;
+    }
+  }
+  return false; 
+}
+
+function rafraichiTPV(parValeur, tpv, el) {
+  let newTpv = parValeur[tpv];
+  if (newTpv) {
+    delete parValeur[tpv];
+    return newTpv;
+  }
+  newTpv = el.cloneNode(true);
+  delete newTpv.dataset.tpl;
+  delete newTpv.dataset.tpla;
+  newTpv.dataset.tpv = tpv;
+  if (newTpv.value) {
+    newTpv.value = newTpv.value.replaceAll('TPL_VAL', tpv);
+  }
+  if (newTpv.id) {
+    newTpv.id = newTpv.id.replaceAll('TPL_VAL', tpv);
+  }
+  if (newTpv.dataset.lbl) {
+    newTpv.dataset.lbl = newTpv.dataset.lbl.replaceAll('TPL_VAL', tpv);
+  }
+  newTpv.hidden = false;
+  newTpv.disabled = false;
+  newTpv.innerHTML = newTpv.innerHTML.replaceAll('TPL_VAL', tpv);
+  return newTpv;
+}
+
+function rafraichiUnTPL(el) {
+  if (!D.TPL[el.dataset.tpl]) {
+    return todoTPL(el);    
+  }
+  const vals = D.TPL[el.dataset.tpl](el);
+  const chk = vals.join(',');
+  if (el.dataset.tpla === chk) {
+    return false; // already set with current values, no change to dom required
+  }
+  const parValeur = {};
+  for (const existingTpv of el.parentNode.querySelectorAll('[data-tpv]')) {
+    parValeur[existingTpv.dataset.tpv] = existingTpv;
+    existingTpv.remove();
+  }
+  let insertAfter = el;
+  for (const tpv of vals) {
+    let newTpv = rafraichiTPV(parValeur, tpv, el);
+    insertAfter.after(newTpv);
+    insertAfter = newTpv;
+  }
+  const retire = Object.values(parValeur);
+  for (const r of retire) {
+    // Cas special: valeurs cliquées retirées  
+    select1stAvailOpt(r);
+  }
+  if (el.tagName === 'OPTION') {
+    selectGoodOption(el);    
+  }
+  el.dataset.tpla = chk;
+  return true;
+}
+
+function rafraichiTPL() {
+  let retVal = false;
+  for (const tpl of qa('[data-tpl]')) {
+    if (rafraichiUnTPL(tpl)) {
+      retVal = true;
+    }
+  }
+  return retVal;
+}
+
+function swapPage(el) {
+  let txt = el.textContent.split(/[ /]+/)[0].toLowerCase();
+  if (txt === 'hp') {
+    txt = 'HP';
+  }
+  const vis = q('.pg.vis');
+  if (vis) {
+    vis.classList.remove('vis');
+  }
+  const pg = _(txt);
+  if (pg) {
+    pg.classList.add('vis');
+  }
+}
+
+function touchArmes(id) {
+  document.body.classList.toggle('configure_armes');
+  D.lastEditEl = _(id);
+  _('title_edit_equip').textContent = 'Groupe Arme(s)/Bouclier #' + id.replace('g', '');
+  data = loadEquip(D.lastEditEl);
+  setAllFields(_('edit_equip'), data);
+  setTimeout(rafraichiEditEquip);
+}
+
+function touchEquip(el, x) {
+  if ( (el.textContent.trim() !== '') && ((window.innerWidth - x) < 45) ) {
+    el.classList.toggle('on');
+  } else {
+    const id = el.id;
+    document.body.classList.toggle('configure_equip');
+    D.lastEditEl = _(id);
+    _('title_edit_equip').textContent = 'Armure / Équipement #' + id.replace('e', '');
+    data = loadEquip(D.lastEditEl);
+    clearValidationGroup(q('#armor_other .validation_group'));
+    setAllFields(_('edit_equip'), data);
+    setTimeout(rafraichiEditEquip);
+  }
+}
+
+D.GROUP_ARMES_SELECTED = {};
+
+function revertH() {
+  const m = document.createElement('m');
+  m.textContent = D.SUB_ICONS.h;
+  return m
+}
+
+function selectGroupeArmes(el) {  
+  const id = 'g' + el.textContent.trim().replace('Groupe ', '');
+  D.GROUP_ARMES_SELECTED = loadGroupeArme(_(id));
+  const shorts = qa('#' + id + ' .short');
+  const s1 = shorts[0].textContent;
+  const s2 = shorts[1].textContent;
+  D.GROUP_ARMES_SELECTED.lbl1 = s1;
+  D.GROUP_ARMES_SELECTED.lbl2 = s2;
+  const w = _('weapons');
+  w.textContent = s1;
+  if (s2) {
+    w.append('\u00A0'.repeat(9));
+    w.appendChild(revertH());
+    w.append(s2.replace(D.SUB_ICONS.h, ''));    
+  }  
+}
+
+function deleteEquip() {
+  if (D.lastEditEl) {
+    if (bodyCls('configure_buff')) {
+      D.lastEditEl.remove();
+      D.lastEditEl = null;
+    } else if (D.lastEditEl.id.startsWith('e')) {
+      D.lastEditEl.querySelector('.short').textContent = '';
+      D.lastEditEl.querySelector('.long').textContent = '';
+    } else {
+      D.lastEditEl.querySelector('.g').innerHTML = _('unarmed_tpl').innerHTML;
+    }
+  }
+}
+
+function confirmCloseEquip() {
+  const dialog = _('confirmDialog');
+  _('confirmDialogMsg').textContent = "Êtes vous certain d'effacer?";
+  dialog.addEventListener('close', function closeEvent() {
+    if (dialog.returnValue === 'oui') {
+      deleteEquip();
+      closeEquip({});
+      dialog.removeEventListener('close', closeEvent);
+    }
+  })
+  dialog.showModal();
+}
+
+function confirmClearAll() {
+  const dialog = _('confirmDialog');
+  _('confirmDialogMsg').textContent = 
+  `Attention !!  Ceci va effacer toutes configurations dans tous les onglets et revernir
+    à la configuration par défaut.  Êtes vous certain de tout effacer ?`
+  dialog.addEventListener('close', function closeEvent() {
+    if (dialog.returnValue === 'oui') {
+      localStorage.clear();
+      localStorage.setItem('clearSavedData', true);
+      _('savedData').textContent = '';
+      setTimeout(() => {
+        window.location.reload()
+      }, 10);
+      dialog.removeEventListener('close', closeEvent);
+    }
+  })
+  dialog.showModal();
+}
+
+D.SERIALIZE_LONG = {
+  manip: v => v.indexOf('1 Main') >= 0 ? '1h' : '2h',
+  armor: v => '/' + v + 'aac',
+  bonus: v => '/' + v,
+  bonusArmor: v => '/' + v + 'eac',
+  comp: v => '/' + v + 'maxstr',
+  dice: v => '/' + v,
+  defending: v => v ? ('/' + v.toLowerCase()) : '',
+  typ: v => {
+    let vv = v.match(/[SMRT]/)?.[0].toLowerCase()
+    return vv ? '/' + vv : ''
+  },
+  typEquip: v => v.includes('Armure') ? 'armor' : 'equip',
+  nom: v => '/' + v,
+  nom_e: v => '/' + v,
+  qual: v => v.includes('Masterwork') ? '/masterwork' : '',
+  incr: v => '/' + v + 'ft',
+  shield: v => '/' + v + 'sac',
+  maxdex: v => (v === 'N/A') ? '' : '/maxdex=' + v,
+  malusTch: v => (v === 'N/A') ? '' : '/' + v + 'utch',
+  plus: v => '/' + v,
+  typb: v => D.BONUS_REVERSE[v],
+  stat: v=> D.TARGET_REVERSE[v],
+  fn: v => '/' + v,
+  specDmg: v => v  ? ('/specDmg=' + v) : ''
+}
+
+function serializeLS(k, v, lookup) {
+  const k2 = k.replace(/[0-9]*/g, '');
+  const fn = lookup[k] || lookup[k2];  
+  return fn?.(v);
+}
+
+D.SERIALIZE_SHORT = {
+  manip: v => v.replace(/1 Main|2 Mains/, ''),
+  typEquip: v => v.replace(/Armure|Autre/, ''),
+  typ: v => v.replace(/Shield|Melee|Range|Throw/, ''),
+  nom: v => v,
+  nom_e: v => v,
+  qual: v => v.indexOf('Masterwork') >= 0 ? 'Masterwork' : '',
+  bonus: v => v,
+  bonusArmor: v => v,
+  defending: v => v
+}
+
+function isEmptyArm(arr) {
+  if (arr.length < 1 || arr[0].indexOf('N/A') >= 0) {
+    return true;
+  }
+  if (arr.length === 1 && (arr[0] === '1h' || arr[0] === '2h')) {
+    return true;
+  }
+  return false;
+}
+
+function saveEquipSpan(emptyTplSelector, sep, span, arr, parenthesis) {
+  if (isEmptyArm(arr)) {
+    if (emptyTplSelector) {
+      span.textContent = q(emptyTplSelector).textContent;
+    } else {
+      span.textContent = '';
+    }
+    return;
+  }
+  let p1 = parenthesis ? '(' : '';
+  let p2 = parenthesis ? ')' : '';
+  let retVal = p1 + arr.join(sep) + p2;
+  if (retVal.indexOf('undefined') >= 0) {
+    // Special case, unarmed
+    retVal = q('#unarmed_tpl .long').textContent;
+  }
+  span.textContent = retVal;
+}
+
+function tokenizeLong(txt) {
+  if (txt.includes('/')) {
+    if (txt.includes('(')) {
+      return txt.split('(')[1].split(')')[0].split('/');
+    } else {
+      return txt.split('/');  
+    }
+  }
+  return txt.replace('(', '').replace(')', '').split(' ');
+}
+
+D.TOKEN_REGEXP = {
+  dice: /^[0-9]+d[0-9]+$/,
+  bonus: /^\+[0-9]+$/,
+  defending: /^defending$/i,
+  masterwork: /^masterwork$/i,
+  comp: /^\+[0-9]+maxstr$/,
+  incr: /^[0-9]+ft$/,
+  maxdex: /^maxdex=\+?[0-9]+$/,
+  shield: /^\+[0-9]+sac$/,
+  armor: /^\+[0-9]+aac$/,
+  bonusArmor: /^\+[0-9]+eac$/,
+  malusTch: /^-[0-9]+utch$/,
+  specDmg: /^specDmg=.+$/,
+}
+
+function defaultTokenProcess(key, data, token) {
+  data[key] = token;
+}
+
+D.TOKEN_PROCESS = {
+  dice: defaultTokenProcess,
+  bonus: (k, d, t) => {
+    defaultTokenProcess(k, d, t);
+    // un bonus signignifie une arme ou un bouclier magique
+    d[k.replace('bonus', 'qual')] = _('qual_magique').textContent;
+  },
+  defending: (k, d) => d[k] = 'Defending',
+  masterwork: (k, d) => d[k] = _('qual_masterwork').textContent,
+  comp: (k, d, t) => d[k] = t.replace('maxstr', ''),
+  incr: (k, d, t) => d[k] = t.replace('ft', ''),
+  maxdex: (k, d, t) => d[k] = t.replace('maxdex=', ''),
+  shield: (k, d, t) => {
+    d['maxdex2'] = 'N/A'; // default to no max dex for a shield
+    d['malusTch2'] = 'N/A'; // default to no malus for a shield
+    d[k] = t.replace('sac', '');
+  },
+  malusTch: (k, d, t) => d[k] = t.replace('utch', ''),
+  armor: (k, d, t) => d[k] = t.replace('aac', ''),
+  bonusArmor: (k, d, t) => {
+    d[k] = t.replace('eac', ''),
+    // un bonus signignifie une armure magique
+    d[k.replace('bonusArmor', 'qual')] = _('qual_magique').textContent;
+  },
+  specDmg: (k, d, t) => {
+    d[k] = t.split('=')[1];
+  }
+}
+
+// Return true if it is a known token, false if that is just part of the name or invalid
+function processToken(t, data, nb) {
+  for (let tokName in D.TOKEN_REGEXP) {
+    if (t.match(D.TOKEN_REGEXP[tokName])) {
+      D.TOKEN_PROCESS[tokName](tokName + nb, data, t);
+      return true;
+    }
+  }
+  return false;
+}
+
+function processGroupTokens(tokens, data, nb) {
+  if (!tokens[2] || (tokens[2].toLowerCase() === 'unarmed')) {
+    // empty / unarmed
+    data['typ' + nb] = 'N/A';
+    return;
+  }
+  data['qual' + nb] = 'Normale'; // default
+  let nomComplet = false;
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (i === 0) {
+      // Manip: 1h=1 Main   2h=2 Mains
+      data.manip = _('manip_' + t).textContent;
+    } else if (i === 1) {
+      // Type: s=Shield m=Melee r=Range t=Throw
+      data['typ' + nb] = _('typ_' + t).textContent;
+    } else if (i === 2) {
+      // début du nom
+      data['nom' + nb] = t;
+    } else if (processToken(t, data, nb)) {
+      nomComplet = true;
+    } else if (nomComplet) {
+      throw new Error("Syntaxe invalide token d'arme/bouclier non supporté:" + t);
+    } else {
+      data['nom' + nb] += ' ' + t;
+    }
+  }
+}
+
+function processFormula(t, data, nb) {
+  data['b' + nb] = 'f(x)';
+  data['fn' + nb] = t;
+  // TODO validation ?
+  return true;
+}
+
+function processGenericBuff(t, data, nb) {
+  if ((t.indexOf('=') >= 0) || (t.indexOf('_') >= 0)) {
+    return processFormula(t, data, nb);
+  }
+  const addMinus = parseInt(t);
+  const rest = t.split(addMinus)[1];
+  const nfo = D.ALL_POSSIBILITIES[rest];
+  if (!nfo) {
+    warnOnce('Token invalide:' + t);
+    return false;
+  }
+  data['b' + nb] = '+/-';
+  data['plus' + nb] = plus(addMinus);
+  data['typb' + nb] = nfo.bonus;
+  data['stat' + nb] = nfo.target;
+  return true;
+}
+
+// Example
+// (armor/Full Plate/+2aac/maxdex=+2/+2eac/+1echa)
+function loadArmor(tokens) {
+  const data = {
+    typEquip: _('armure').textContent,
+    nom_e: tokens[1],
+    qual: 'Normale'
+  }
+  let nb = 1;
+  for (let i = 2; i < tokens.length; i++) {
+    if (!processToken(tokens[i], data, '')) {
+      if (processGenericBuff(tokens[i], data, nb)) {
+        nb++;
+      }
+    }
+  }
+  return data;
+}
+
+// Example
+// (equip/girdle giant strength/+4estr)
+function loadOther(tokens) {
+  const data = {
+    typEquip: _('autre').textContent,
+    nom_e: tokens[1]
+  }
+  let nb = 1;
+  for (let i = 2; i < tokens.length; i++) {
+    if (processGenericBuff(tokens[i], data, nb)) {
+      nb++;
+    }
+  }
+  return data;
+}
+
+function loadArmorEquip(el) {
+  const long = el.querySelector('.long');
+  if (!long.textContent) {
+    return {};
+  }
+  const tokens = tokenizeLong(long.textContent);  
+  if (tokens[0] === 'armor') {
+    return loadArmor(tokens);
+  } else {
+    return loadOther(tokens);
+  }
+}
+
+function loadGroupeArme(el) {
+  const data = {};
+  const longs = el.querySelectorAll('.long');  
+  const principale = tokenizeLong(longs[0].textContent);
+  const secondaire = tokenizeLong(longs[1].textContent);  
+  data.long1 = longs[0].textContent;
+  data.long2 = longs[1].textContent;
+  processGroupTokens(principale, data, 1);
+  processGroupTokens(secondaire, data, 2);
+  return data;
+}
+
+function loadEquip(el) {
+  let data;
+  if (el.parentNode.id === 'groupes_armes') {
+    data = loadGroupeArme(el);
+  } else {
+    data = loadArmorEquip(el);
+  }
+  return data;
+}
+
+function refreshSelectedGroupArmes() {
+  touch(q('.mnu.armes .on'), 0);  
+}
+
+function saveBuff(data) {
+  const ret = [];
+  let nom = '';
+  for (let [k, v] of Object.entries(data)) {
+    const v2 = serializeLS(k, v, D.SERIALIZE_LONG);    
+    if (k === 'nom_e') {
+      nom = v;
+    } else if (v2 && k !== 'typEquip') {
+      ret.push(v2);
+    }
+  }
+  ret.push(')');
+  const parenthesis = ret.join('').replace('/', '(');
+  if (D.lastEditEl) {
+    updateBoost(nom, parenthesis);
+  } else {
+    createBoost(nom, parenthesis);
+  }
+}
+
+function saveEquip() {
+  const data = lectureChamps(_('edit_equip'));
+  if (bodyCls('configure_buff')) {    
+    return saveBuff(data);
+  }
+  let manipLong = '';
+  let manipShort = '';
+  const allShorts = [...D.lastEditEl.querySelectorAll('.short')];
+  const allLongs = [...D.lastEditEl.querySelectorAll('.long')];
+  let short = allShorts.shift();
+  let arrShort = [];
+  let long = allLongs.shift(); 
+  let arrLong = [];
+  let tplShort = '#unarmed_tpl .short';
+  let tplLong = '#unarmed_tpl .long';
+  for (let k in data) {
+    if (k === 'typ2') {
+      saveEquipSpan(tplShort, ' ', short, arrShort);
+      saveEquipSpan(tplLong, '', long, arrLong, true);
+      tplShort = null;
+      tplLong = null;
+      short = allShorts.shift();
+      long = allLongs.shift();
+      arrShort = [manipShort];
+      arrLong = [manipLong];
+    }
+    const v = serializeLS(k, data[k], D.SERIALIZE_SHORT);
+    if (v) {    
+      if (k.match(/^typ|^nom/) && arrLong[0]) {
+        arrShort[0] += v;
+      } else {
+        arrShort.push(v);
+      }
+    }
+    // intentionally not using ? because we need to serialize all field in long
+    // if it throws an error this need to be added in the SERIALIZE_LONG map
+    const v2 = serializeLS(k, data[k], D.SERIALIZE_LONG);
+    if (v2) {
+      arrLong.push(v2);
+    }
+    if (v2 === '/') {
+      console.log('empty detected for ', k);
+    }
+    if (k === 'manip') {
+      manipShort = v;
+      manipLong = v2;
+    }
+  }
+  saveEquipSpan(tplShort, ' ', short, arrShort);
+  saveEquipSpan(tplLong, '', long, arrLong, true);
+}
+
+function closeEquip(el) {
+  if (el.disabled) {
+    return;
+  }
+  if (el.id === "equip_clear") {
+    confirmCloseEquip();
+    return;
+  }
+  if (el.id === "equip_ok") {
+    saveEquip();
+    if (bodyCls('configure_buff')) {
+      setTimeout(rafraichi);
+    } else if (D.lastEditEl?.id?.startsWith('e')) {
+      // armure / equipement
+      D.lastEditEl.classList.add('on');
+    } else {
+      // armes / bouclier
+      refreshSelectedGroupArmes();
+    }
+  }
+  document.body.classList.remove('configure_armes');
+  document.body.classList.remove('configure_equip');
+  document.body.classList.remove('configure_buff');
+  _('equip_clear').disabled = false;
+}
+
+function clearInput(el) {
+  el.previousElementSibling.value = '';
+  setTimeout(rafraichi);
+}
+
+function clearValidationGroup(el, except) {
+  let g = el;
+  if (!g.classList.contains('validation_group')) {
+    g = el.closest('.validation_group');
+  }
+  if (!g) {
+    return;
+  }
+  for (const child of g.querySelectorAll('[data-key]')) {
+    if (child.dataset.key !== except) {
+      setFieldDirect(child, '');
+    }
+  }
+}
+
+function swapMain(el) {
+  const main1 = _('mainPrincipale');
+  const data = lectureChamps(main1);
+  const arme = D.WEAPONS_MAP[data.nom1];
+  if (arme && data.typ1.includes('Melee')) {
+    // Utiliser une arme a une main vers 2 mains en melee est permis
+    // Si on re-swap vers 1Main, ce doit être une armes valable à 1Main
+    if (el.textContent.includes('2 Mains') || arme.filter.includes('1H')) {
+      return;
+    }
+  }
+  // Autrement on re-initialise les champs de la main principale
+  clearValidationGroup(main1, 'typ1');
+}
+
+function swapTypEquip(_el) {  
+  const group = q('#armor_other .validation_group');
+  clearValidationGroup(group);
+}
+
+function validateDice() {
+  const nbMnu = qa('#dicedialog .mnu.gen').length;
+  const nbOn = qa('#dicedialog .mnu.gen .on').length;
+  if (nbMnu === nbOn) {
+    q('#dicedialog button').disabled = false;
+  }
+}
+
+function swapAtk(el) {
+  D.TYP_ATK = el.dataset.tatk;
+}
+
+// Making sure both melee or both range/throw, no mismatch
+function syncArmTyp(letter, mnu) {
+  const on = mnu.querySelector('.on');
+  const letterTyp = on.textContent.match(/[MRT]/)?.[0];
+  if (!letterTyp || (letterTyp === letter)) {
+    return; // match, or na/shield  nothing to do
+  }
+  const isMelee1 = letter === 'M';
+  const isMelee2 = letterTyp === 'M';
+  if (isMelee1 != isMelee2) {
+    // Need to synch type
+    const toClick = [...mnu.children].filter(
+      el => el.textContent.match(letter)
+    );
+    touch(toClick[0], 0);
+  }
+}
+
+function swapArmTyp(el) {  
+  const group = el.closest('.validation_group');
+  const name = group.querySelector('.line input').value;
+  const weapon = D.WEAPONS_MAP[name];
+  const letterTyp = el.textContent.match(/[MRT]/)?.[0];
+  if (letterTyp && !_('manip_2h').classList.contains('on')) {
+    const id = (el.parentNode.id === 'typ2') ? 'typ1' : 'typ2';
+    setTimeout(syncArmTyp(letterTyp, _(id)));
+  }
+  if (weapon && letterTyp && weapon.filter.includes(letterTyp)) {
+    // Check Special case: weapon is compatible with new seleted type
+    // example a dagger is both melee and thrown
+    return;
+  }
+  clearValidationGroup(group, el.parentNode.dataset.key);
+}
+
+D.CURR_FEATS = {};
+
+function getFeatName(displayText) {
+  return displayText.trim().replaceAll(' ', '').toLowerCase();  
+}
+
+function doubleCheckFeats() {
+  let changement = false;
+  for (const f of qa('#feats .tgl.on')) {
+    if (!f.checkVisibility() && (f.id !== 'sneak_dice')) {
+      f.classList.remove('on');
+      changement = true;
+    }
+  }
+  if (changement) {
+    setTimeout(rafraichi);
+  }
+}
+
+function updateFeat(el) {
+  const featName = getFeatName(el.textContent);  
+  if (el.classList.contains('on')) {
+    D.CURR_FEATS[featName] = true;
+  } else {
+    D.CURR_FEATS[featName] = false;
+  }
+  setTimeout(doubleCheckFeats);
+}
+
+function getSpecialSaveDesc(el) {
+  const mainSave = el.className.replace('special_save ', '');
+  let subSave = '';
+  for (let sib = el.previousElementSibling;
+    sib && !subSave;
+    sib = sib.previousElementSibling
+  ) {
+    if (sib.dataset.id === 'name') {
+      subSave = sib.textContent;
+    }
+  }
+  if (!D.TABLE_BUFFS_SAVES[mainSave]) {
+    return null; // should not happen
+  }
+  return {
+    ttl: 'buffs de ' + D.TARGET[mainSave] + ': ' + subSave,
+    tbl: Object.values(D.TABLE_BUFFS_SAVES[mainSave].special[subSave] || {})
+  }
+}
+
+function buildSpecialWillSave() {
+  // Force of Personality / Special case for bard
+  const retVal = {
+    mod: structuredClone(getStatModTbl('wis'))
+  }
+  retVal.mod.details.bonus = 'Bonus de stats';
+  const cha = getStatModTbl('cha');
+  const nom = 'Force Of Personality (' + Object.keys(cha.parts)[0] + ')';
+  microCumule(retVal, 'mod', cha.details, nom, cha.val);
+  return {
+    ttl: 'Modificateur (Stats) Will Save',
+    tbl: [ retVal.mod ]
+  }
+}
+
+function getSaveDesc(el) {
+  const mainSave = el.id.replace('Buff', '');
+  if (mainSave === 'willStats') {
+    return buildSpecialWillSave();
+  }
+  if (!D.TABLE_BUFFS_SAVES[mainSave]) {
+    return null; // should not happen
+  }
+  return {
+    ttl: 'buffs de ' + D.TARGET[mainSave],
+    tbl: Object.values(D.TABLE_BUFFS_SAVES[mainSave]).filter(v => v.details)
+  }
+}
+
+D.AC_ID_TBL = {
+  ac: () => D.TABLE_AC,
+  ffac: () => D.TABLE_FFAC,
+  tac: () => D.TABLE_TAC
+};
+
+D.AC_ID_TTL = {
+  ac: 'Armure',
+  ffac: 'Armure Flat Footed',
+  tac: 'Armure Touch'
+};
+
+function getCombatDesc(el) {
+  if (el.id?.endsWith('ac')) {
+    return {
+      tbl: Object.values(D.AC_ID_TBL[el.id]()),
+      ttl: D.AC_ID_TTL[el.id]
+    }    
+  }
+  const tr = el.closest('tr');
+  const table  = el.closest('table');
+  const allTr = [...table.querySelectorAll('tr')];
+  const i = allTr.indexOf(tr);
+  const atkTbl = D.ATK_TBL[i]; 
+  let ttl = '';
+  let tbl;
+  if (el.nextSibling || !el.previousSibling) {
+    tbl = Object.values(atkTbl.tch);
+    ttl = 'Toucher ' +
+      'attaque #' + (i + 1) + "/" + allTr.length + ':\n' +
+      atkTbl.txt;
+  } else {
+    tbl = Object.values(atkTbl.dmg);
+    ttl = 'Calcul dégats\nMain ' + 
+      (atkTbl.txt.includes('Principale') ? 'Principale' : 'Secondaire');
+  }
+  if (!D.CONDITIONS_ATK.h2()) {
+    ttl = ttl.replace('\nMain ', '')
+      .replace('Principale', '')
+      .replace('Secondaire','');
+  }  
+  ttl = ttl.replaceAll(' ', '\u00A0').replaceAll('(', '\n(');
+  return { ttl, tbl };
+}
+
+function getStatsDesc(el) {
+  if (el.id.endsWith('Buff')) {
+    const statName = el.id.replace('Buff', '');
+    return {
+      ttl: 'buffs de ' + D.TARGET[statName],
+      tbl: Object.values(D.TABLE_BUFFS)
+        .filter(v => v.details.stat === statName)
+    }
+  } else {
+    return {
+      ttl: majusculeParMot(el.id),
+      tbl: Object.values(D.TABLE_COMBAT[el.id])
+    }
+  }
+}
+
+function getHPdesc() {
+  return {
+    ttl: 'buffs de ' + D.TARGET['hp'],
+    tbl: Object.values(D.TABLE_BUFFS).filter(v => v.details.stat === 'hp')
+  }
+}
+
+D.EXPLANATION_PER_PAGE = {
+  stats: getStatsDesc,
+  saves: getSaveDesc,
+  HP: getHPdesc,
+  combat: getCombatDesc
+}
+
+function majusculeParMot(str) {
+  return str.split(' ').map(m => m[0].toUpperCase() + m.slice(1)).join(' ');
+}
+
+function requireExplanation(el) {
+  if (el.tagName === 'TD') {
+    const next = !!el.nextElementSibling;
+    const previous = !!el.previousElementSibling;
+    const p = el.parentElement;
+    return (p.className !== 'troll') && (previous || !next);
+  }  
+  return el.id?.endsWith('Buff')
+    || el.id?.endsWith('ac')
+    || el.dataset.id === 'buff'
+    || el.classList.contains('explain')
+    || el.parentElement.classList.contains('grid3');
+}
+
+function getExplanationDesc(el) {  
+  if (el.dataset.id) {
+    return getSpecialSaveDesc(el);
+  }  
+  const pg = q('.pg.vis');
+  return D.EXPLANATION_PER_PAGE[pg.id]?.(el);  
+}
+
+function partTxt(v) {
+  return v.match?.(/[a-zA-Z]/) ? v : plus(v);
+}
+
+function removeHands(txt) {
+  return txt.replace(D.SUB_ICONS['1h'], '').replace(D.SUB_ICONS['2h'], '');
+}
+
+function generateExplanationParts(clone, parts, stack) {
+  let allParts = Object.entries(parts);
+  if (stack === 'reverse') {
+    allParts.sort((a, b) => a[1] - b[1]);
+  } else if (!stack) {
+    allParts.sort((a, b) => b[1] - a[1]);
+  }
+  let itm = clone.querySelector('.itm');
+  itm.children[0].textContent = removeHands(allParts[0][0]);
+  itm.children[1].textContent = partTxt(allParts[0][1]);
+  for (let i = 1; i < allParts.length; i++) {
+    let itm2 = itm.cloneNode(true);
+    if (!stack || (stack === 'reverse') || (stack === 'first')) {
+      itm2.classList.add('strk');
+    }
+    itm2.children[0].textContent = removeHands(allParts[i][0]);
+    itm2.children[1].textContent = partTxt(allParts[i][1]);
+    itm.after(itm2);
+    itm = itm2;
+  }
+}
+
+function titreBonus(details) {
+  let b = details.bonus;
+  if (b.match(/^[A-Z]/)) {
+    return b;
+  }
+  if (details.l == 'e' && details.stat === 'ac') {
+    b += ' (Armor)'
+  } else if (details.l == 'e' && details.stat === 'sac') {
+    b += ' (Shield)'
+  } else if (details.l == 'e' && details.stat === 'nac') {
+    b += ' (Natural)'
+  }
+  return majusculeParMot(b + ' bonus');
+}
+
+function generateExplanationTbl(tpl, tbl) {
+  let insertAfter = tpl;
+  for (let t of tbl) {
+    const clone = tpl.cloneNode(true);
+    clone.classList.remove('tpl');
+    clone.classList.add('mid');
+    const spans = clone.querySelectorAll('.hdr span');
+    spans[0].textContent = titreBonus(t.details);
+    spans[1].textContent = partTxt(t.val);
+    generateExplanationParts(clone, t.parts, t.details.stack);
+    insertAfter.after(clone);
+    insertAfter = clone;
+  }
+}
+
+function boboProceed(hp, target) {
+  if (!hp || (hp <= 0)) {
+    return;
+  }
+  if (target.id === 'newBobo') {
+    const clone = _('bobo_tpl').content.cloneNode(true);
+    const bobo = clone.querySelector('.bobo');
+    const tok = bobo.textContent.split(' ');
+    tok[1] = parseInt(hp);
+    bobo.textContent = tok.join(' ');
+    _('blessures').append(clone);
+  } else {
+    const bobo = target.previousElementSibling;
+    const tok = bobo.textContent.split(' ');
+    tok[1] = parseInt(tok[1]) - parseInt(hp);
+    if (tok[1] > 0) {
+      bobo.textContent = tok.join(' ');
+    } else {
+      bobo.remove();
+      target.remove();
+    }    
+  }
+  setTimeout(rafraichi);
+}
+
+function confirmBladeOfBlood() {
+  const baleful = q('.baleful.on');
+  if (!baleful) {
+    return;
+  }
+  const dialog = _('confirmDialog');
+  _('confirmDialogMsg').innerHTML = 
+    "Blade of Blood🩸(+3d6)" 
+    + "<br>Cause une blessure de <b>5hp</b>."
+    + "<br>Voulez-vous continuer ?";
+  dialog.addEventListener('close', function closeEvent() {
+    dialog.removeEventListener('close', closeEvent);
+    if (dialog.returnValue === 'oui') {
+      boboProceed(5, {id: 'newBobo'});
+    } else {
+      baleful.classList.remove('on');
+      setTimeout(rafraichi);
+    }    
+  })
+  dialog.showModal();
+}
+
+function confirmFullHeal() {
+  const dialog = _('confirmDialog');
+  _('confirmDialogMsg').textContent = "Guérir toutes les blessures au complet ?";
+  dialog.addEventListener('close', function closeEvent() {
+    if (dialog.returnValue === 'oui') {
+      _('blessures').innerHTML = '';
+      setTimeout(rafraichi);
+      dialog.removeEventListener('close', closeEvent);
+    }
+  })
+  dialog.showModal();
+}
+
+function boboHeal(id, target) {
+  if (id === 'fullHeal') {
+    return confirmFullHeal();
+  }
+  const dlg = _('boboDialog');
+  const titre = target.textContent.replace('+', ' Nouvelle ')
+    .replace('Heal', 'Guérison');
+  if (target.classList.contains('bobo')) {
+    dlg.classList.add('bobo');
+    dlg.classList.remove('heal');
+  } else {
+    dlg.classList.remove('bobo');
+    dlg.classList.add('heal');
+    const bobo = target.previousElementSibling;
+    dlg.querySelector('.bobo').textContent = bobo.textContent;
+  }
+  dlg.querySelector('.titre').textContent = titre;
+  dlg.addEventListener('close', function closeEvent() {
+    if (dlg.returnValue === 'ok') {
+       boboProceed(_('bobo_hp').value, target);
+    }
+    dlg.removeEventListener('close', closeEvent);
+  });
+  dlg.showModal();
+  _('bobo_hp').value = '';
+  touch('#bobo_hp', 100);  
+}
+
+function expliqueBuff(el) {
+  if (el.classList.contains('out_of_range')) {
+    return;
+  }
+  const desc = getExplanationDesc(el);
+  if (!desc) {
+    console.warn('Explication non-supportée', el);
+    return;
+  }
+  const dlg = _('explicationDialog');  
+  for (const e of dlg.querySelectorAll('.mid')) {
+    e.remove();
+  }
+  const tpl = dlg.querySelector('.tpl');
+  dlg.querySelector('.ttl').textContent = desc.ttl;
+  generateExplanationTbl(tpl, desc.tbl);
+  dlg.querySelector('.tot').textContent = el.textContent;
+  _('explicationDialog').showModal();
+}
+
+D.TGL_FN = {
+  updateFeat,
+  confirmBladeOfBlood
+}
+
+D.SWAP_FN = {
+  selectGroupeArmes,
+  swapPage,
+  swapArmTyp,
+  swapMain,
+  swapTypEquip,
+  swapAtk,
+  validateDice,
+  qs
+}
+
+function autoEnable(el) {
+  if ((el.tagName === 'INPUT') || (el.tagName === 'SELECT')) {
+    el.disabled = false;
+    el.focus();
+  } else {
+    console.log('not auto  enabling', el);
+  }
+}
+
+function touch(elOrSel, delay) {
+  let el = (typeof elOrSel === 'string') ? q(elOrSel) : elOrSel;
+  if (delay || (delay === 0)) {
+    setTimeout(() => touche({target: el}), delay);
+  } else {
+    touche({target: el});
+  }  
+}
+
+function qs(el) {
+  const dlg = _('quickSelect');
+  const mnu = el.parentElement;
+  const val = parseInt(el.textContent) * parseInt(dlg.dataset.inc);
+  const input = _(dlg.dataset.inputId);
+  input.value = val;
+  dlg.close();
+  mnu.textContent = '';
+  setTimeout(rafraichi);
+}
+
+function quickSelect(el) {
+  const inputId = el.parentElement.querySelector('input').id;
+  const dlg = _('quickSelect');
+  dlg.dataset.inc = el.dataset.inc;
+  dlg.dataset.inputId = inputId; 
+  const titre = dlg.querySelector('.titre');
+  titre.textContent = el.dataset.ttl;  
+  const mnu = dlg.querySelector('.mnu'); 
+  mnu.textContent = '';
+  for (let i = el.dataset.from; i <= el.dataset.to; i++) {
+    const div = document.createElement('div');
+    div.textContent = i;
+    mnu.append(div);
+  }
+  dlg.showModal();
+}
+
+function touche(event) {
+  if (event.button === 2) {
+    return; // skip right click
+  }
+  let el = event.target;
+  if (el.tagName === 'SPAN') {
+    el = el.closest('*:not(span)');
+  }
+  const cl = el.classList;
+  const parent = el.parentNode;
+  const pcl = parent.classList;
+  if (parent.id === 'groupes_armes') {
+    return touchArmes(el.id);
+  }
+  if (cl.contains('quickselect')) {
+    return quickSelect(el);
+  }
+  if (el.id?.match(/^(fullHeal|blessures|newBobo)$/)) {
+    boboHeal(el.id, event.target);
+  }
+  if (el.id === 'add_buff') {
+    startEditOneBuff();
+  }
+  if (requireExplanation(el)) {
+    return expliqueBuff(el);
+  }
+  if (el.disabled) {
+    autoEnable(el);
+  }
+  if (parent.id === 'armure_equipement') {
+    touchEquip(el, event.pageX);
+  }
+  if (cl.contains('gear-icon')) {
+    return editBuffs();
+  }
+  if (cl.contains('clear-div')) {
+    clearInput(el);
+  }
+  if (el.id && el.id.startsWith('equip_')) {
+    return closeEquip(el);
+  }
+  if (cl.contains('tgl')) {
+    if (!editUnBuff(el) && !detectDiceBuff(el)) { 
+      cl.toggle('on');
+      D.TGL_FN[parent.dataset.ontgl]?.(el);
+    }
+  } else if (pcl.contains('mnu')) {
+    const el2 = parent.getElementsByClassName('on')?.[0];
+    if (el2) {
+      el2.classList.remove('on');
+    }
+    if (!pcl.contains('offable') || (el !== el2)) {
+      cl.add('on');
+    }
+    D.SWAP_FN[parent.dataset.onswap]?.(el);
+  } else if (el.id === 'fullscreen') {
+    makeFullScreen();
+  } else {
+    return;
+  }
+  rafraichi();
+}
+
+function makeFullScreen() {
+  const e = document.documentElement;
+  if (e.requestFullscreen) {
+    e.requestFullscreen();
+  } else if (e.mozRequestFullScreen) {
+    e.mozRequestFullScreen();
+  } else if (e.webkitRequestFullScreen) {
+    e.webkitRequestFullScreen();
+  } else if (e.msRequestFullscreen) {
+    e.msRequestFullscreen();
+  }
+}
+
+document.body.addEventListener('pointerdown', touche);
+
+function disableMe(event) {
+  event.target.disabled = true;
+}
+
+function blurOnEnter(event) {
+  if (event.key === 'Enter') {
+    event.target.blur(); 
+  }
+}
+
+function mod(score) {
+  return Math.floor((score - 10) / 2);
+}
+
+function plus(n) {
+  const nn = parseInt(n);
+  return nn >= 0 ? "+" + nn : nn;
+}
+
+function addPlus(el) {
+  const v = el.value;
+  if (v != '' && v[0] !== '+' && v[0] !== '-') {
+    el.value = '+' + el.value;
+  }
+}
+
+document.addEventListener('change', function () {
+  rafraichiEditEquip() || rafraichi();
+});
+
+D.UI = {};
+D.STATS = {
+  str: null,
+  dex: null,
+  con: null,
+  int: null,
+  wis: null,
+  cha: null,
+  hp: null
+};
+D.SAVES = {
+  fort: null,
+  reflex: null,
+  will: null
+};
+
+function checkWillSave() {
+  if (!D.CURR_FEATS?.forceofpersonality) {
+    _('willStats').classList.remove('explain');
+    return D.STATS.wis?.mod;
+  }
+  _('willStats').classList.add('explain');
+  if (D.STATS.cha?.mod > D.STATS.wis?.mod) {
+    return D.STATS.cha?.mod;
+  }
+  return D.STATS.wis?.mod;
+}
+
+D.SAVES_STATS_BONUS = {
+  fort: () => D.STATS.con.mod,
+  will: checkWillSave,
+  reflex: () => D.STATS.dex.mod
+}
+D.PERSO = {
+  lvl: 1,
+  bab: 1,
+  miscDmg: 0,
+  miscTch: 0,
+  saveTmp
+};
+
+function uiRead(name) {
+  if (!D.UI[name]) {
+    D.UI[name] = _(name);
+  }
+  return Number(D.UI[name].value);
+}
+
+function updateBlessures() {
+  if (!D.UI.hp.curr) {    
+    D.UI.curr = _('currHP');    
+  }
+  let bobos = 0;
+  for (const el of qa('#blessures .bobo')) {
+    bobos += parseInt(el.textContent.replace(/\D/g, '')); 
+  }
+  D.STATS.hp.bobos = bobos;
+  D.STATS.hp.curr = D.STATS.hp.total - bobos;
+  D.UI.curr.textContent = D.STATS.hp.curr;
+}
+
+function updateStat(name) {
+  if (!D.UI[name]) {
+    D.UI[name] = {
+      base: _(name),
+      tmp: _(name + 'Tmp'),
+      buff: _(name + 'Buff'),
+      total: _(name + 'Tot'),
+      mod: _(name + 'Mod'),
+      stats: _(name + 'Stats'),
+      p: _(name + 'P') // polymorph override
+    };
+  }
+  const ui = D.UI[name];
+  if (!D.STATS[name]) {
+    D.STATS[name] = {};
+  }
+  const s = D.STATS[name];
+  // input
+  s.base = Number(ui.base.value);
+  s.original_base = s.base;
+  s.tmp = Number(ui.tmp.value);
+  // compute
+  s.buff = calcule(D.TABLE_BUFFS, name);  
+  
+  if (ui.p) {
+    const override = D.TABLE_BUFFS['base' + name]?.val;
+    if (override) {      
+      s.base = Number(override);
+      ui.p.textContent = '(' + override + ')';
+    } else {
+      ui.p.textContent = '';
+    }
+  }
+  
+  if (ui.stats) {
+    // HP Constititution Bonus
+    s.stats = (D.STATS.con?.original_mod || 0) * D.PERSO.lvl;
+    ui.stats.textContent = plus(s.stats);
+  }
+  s.total = s.base + s.tmp + s.buff + (s.stats || 0);
+  s.original_total = s.original_base + s.tmp + s.buff + (s.stats || 0);
+  if (ui.mod) {
+    s.mod = mod(s.total);
+    s.original_mod = mod(s.original_total);
+  }
+
+  // display
+  ui.buff.textContent = s.buff ? plus(s.buff) : '';
+  ui.total.textContent = s.total;
+  if (ui.mod) {
+    ui.mod.textContent = plus(s.mod);
+  }
+}
+
+function updateSave(name) {
+  if (!D.UI[name]) {
+    const tpl = q('template[data-save="' + name + '"]');
+    D.UI[name] = {
+      base: _(name),
+      tmp: _(name + 'Tmp'),
+      stats: _(name + 'Stats'),
+      buff: _(name + 'Buff'),
+      total: _(name + 'Tot'),
+      tpl,
+      tpl_order: [...tpl.content.children].map(n => n.dataset.id)
+    };
+  }
+  const ui = D.UI[name];
+  if (!D.SAVES[name]) {
+    D.SAVES[name] = {};
+  }
+  const s = D.SAVES[name];
+  // input
+  s.base = Number(ui.base.value);
+  s.tmp = Number(ui.tmp.value);
+  // compute
+  s.stats = D.SAVES_STATS_BONUS[name]();  
+  if (D.CURR_FEATS?.paladinpowers && (D.STATS.cha.mod > 0)) {
+    // special case paladin charisma
+    s.stats += D.STATS.cha.mod;
+  }
+
+  s.buff = D.PERSO.saveTmp + calcule(D.TABLE_BUFFS_SAVES[name], name);
+  s.total = s.base + s.stats + s.tmp + s.buff;
+  // display
+  ui.stats.textContent = plus(s.stats);
+  ui.buff.textContent = plus(s.buff);  
+  ui.total.textContent = s.total;
+
+  updateSpecialSaves(name);
+}
+
+function updateSpecialSaves(name) {
+  const special = D.TABLE_BUFFS_SAVES[name].special;
+  const tpl = D.UI[name].tpl;
+  const tplOrder = D.UI[name].tpl_order;
+  const expected = [];
+  const specialNames = Object.keys(special).sort();  
+  const s = D.SAVES[name];  
+  for (const n of specialNames) { 
+    const obj = special[n];
+    const buff = D.PERSO.saveTmp + calcule(obj, name);
+    const curr = {
+      name: n,
+      tot: s.base + s.stats + s.tmp + buff,
+      base: '""',
+      tmp: '""', 
+      stats: '""',
+      buff: plus(buff)
+    }
+    for (let k of tplOrder) {
+      expected.push(curr[k]);
+    }
+  }
+  const actualNodes = [...qa('.special_save.' + name)];
+  let insertAfter = actualNodes.length > 0 ? actualNodes.at(-1) : tpl;
+  let i = 0;
+  for (; i < expected.length; i++) {
+    let actual = actualNodes[i];
+    if (!actual) {
+      const clone = tpl.cloneNode(true);
+      actualNodes.push(...clone.content.children);
+      actual = actualNodes[i];
+    }
+    if (!actual.isConnected) {
+      actual.textContent = expected[i];
+      insertAfter.after(actual);
+      insertAfter = actual;
+    } else if (actual.textContent !== expected[i]) {
+      actual.textContent = expected[i];
+    }
+  }
+  for (; i < actualNodes.length; i++) {
+    actualNodes[i].remove();
+  }
+}
+
+function multiplyBonus(bonus, factor, prefix) {
+  const retVal = structuredClone(bonus);
+  retVal.val *= factor;
+  for (let [nom, mod] of Object.entries(retVal.parts)) {
+  if (prefix) {
+      delete retVal.parts[nom];
+      retVal.parts[prefix + nom] = mod * 4;
+    } else {
+      retVal.parts[nom] = mod * 4;
+    }
+  }
+  return retVal;
+}
+
+function additionneVals(tableObj) {
+  return Object.values(tableObj)
+    .map(o => o.val)
+    .reduce((p, v) => p + v, 0);
+}
+
+function updateGrapple() {
+  // grapple = BAB + bonus str + bonus de size
+  const grapple = {
+    bab: D.TABLE_BUFFS.bab,
+    str_mod: getStatModTbl('str'),
+    basesize: multiplyBonus(D.TABLE_BUFFS.basesize, 4, 'Taille de base: ')
+  };
+  if (D.TABLE_BUFFS.zsiz) {
+    for (let [nom, mod] of Object.entries(D.TABLE_BUFFS.zsiz.parts)) {
+      // TODO: verifier si polymorph troll + enlarge + reduce doivent stacker
+      microCumule(grapple, 'zsize', D.TABLE_BUFFS.zsiz.details, nom, mod * 4)
+    }
+  }
+  const tot = additionneVals(grapple)
+  _('grapple').textContent = plus(tot);
+  D.TABLE_COMBAT.grapple = grapple;
+}
+
+function nbBABatk() {
+  let retVal = 1 + Math.floor((D.PERSO.bab - 1) / 5);
+  return retVal > 4 ? 4 : retVal;
+}
+
+function updateMeleeRange(typ, stat) {
+  // type = 'melee' ou 'range'
+  // stat = 'str' ou 'dex'
+  const atk = {
+    bab: D.TABLE_BUFFS.bab,
+    mod: getStatModTbl(stat)
+  }
+  const spec = typ === 'melee' ? 'mel' : 'rng'
+  Object.assign(atk,
+    Object.fromEntries(Object.entries(D.TABLE_BUFFS)
+      .filter(e => (e[1].details.stat === 'tch') || (e[1].details.stat === spec))
+    )
+  );
+  if (D.PERSO.miscTch) {
+    miscBonus(atk, D.PERSO.miscTch, 'miscTch', 'Tmp+-')
+  }
+  let val = additionneVals(atk);
+  const nbAtk = nbBABatk();
+  D.TABLE_COMBAT[typ] = atk;
+  let str = plus(val);
+  for (let i = 1; i < nbAtk; i++) {
+    val -= 5;
+    str += '/' + val;
+  }
+  _(typ).textContent = str;
+}
+
+function updateMelee() {
+  updateMeleeRange('melee', 'str');
+}
+
+function updateRange() {
+  updateMeleeRange('range', 'dex');
+}
+
+function updateBAB() {
+  const details = {
+    stat: 'bab',
+    bonus: 'base attack',
+    target: D.TARGET.bab,
+    stack: false
+  }
+  microCumule(D.TABLE_BUFFS, 'bab', details, 'Base Attack', D.PERSO.bab);
+  D.PERSO.bab = D.TABLE_BUFFS.bab.val;
+}
+
+function getStatModTbl(stat) {
+  const key = stat + '_mod';
+  if (D.TABLE_BUFFS[key]) {
+    return D.TABLE_BUFFS[key];
+  }
+  const t = D.TARGET[stat];
+  const s = D.STATS[stat];
+  const nom = t + ' = ' + s.total;
+  const details = {
+    stat: key,
+    bonus: 'Bonus de ' + t,
+    target: t,
+    stack: false
+  }
+  microCumule(D.TABLE_BUFFS, key, details, nom, s.mod);
+  return D.TABLE_BUFFS[key];
+}
+
+function appliqueTable(src, dest, filtre) {
+  if (!src) {
+    return;
+  }
+  for (const [k, v] of Object.entries(src)) {
+    if (filtre && !filtre(v)) {
+      continue;
+    }
+    for (const [nom, mod] of Object.entries(v.parts)) {      
+      microCumule(dest, k, v.details, nom, mod);
+    }
+  }
+}
+
+function miscBonus(retVal, val, stat, nom) {
+  const details = {
+    stat,
+    bonus: 'Autre bonus',
+    stack: false
+  }
+  microCumule(retVal, stat, details, nom, val);
+}
+
+function update() {
+  for (let k of Object.keys(D.STATS)) {
+    updateStat(k);
+  }
+  for (let k of Object.keys(D.PERSO)) {
+    D.PERSO[k] = uiRead(k);
+  }
+  updateBAB();
+  for (let k of Object.keys(D.SAVES)) {
+    updateSave(k);
+  }
+  updateBlessures();
+  D.TABLE_COMBAT = {};
+  updateGrapple();
+  updateMelee();
+  updateRange();
+}
+
+if ('virtualKeyboard' in navigator) {
+  // Opt-in to handling the keyboard geometry changes yourself
+  navigator.virtualKeyboard.overlaysContent = true;
+
+  navigator.virtualKeyboard.addEventListener('geometrychange', (event) => {
+    const { _x, _y, _width, height } = event.target.boundingRect;
+    
+    // Check if an input is focused and the keyboard height dropped to 0
+    if (height === 0 && document.activeElement.tagName === 'INPUT') {
+      console.log('Keyboard closed via back button, but input is still focused.');      
+      
+      // Optional: Force a blur to keep UI synchronized      
+      //document.activeElement.blur();
+    }
+    if (height > 0 && document.activeElement.tagName === 'INPUT') {
+      setTimeout(() => document.activeElement.scrollIntoView(), 100);
+    }
+    if (height === 0) {
+      setTimeout(() => document.documentElement.scrollTo({top: 0}), 100);
+    }
+  });
+}
+
+// Prévenir les charactères invalides
+document.addEventListener('beforeinput', (e) => {
+  // Check if target is an input or textarea that you want to filter
+  const target = e.target;
+  if (!target.pattern) {
+    return;
+  }
+  const pattern = new RegExp(target.pattern);
+  // e.data contains the string being inserted (typed, pasted, or dragged)
+  if (e.data && !pattern.test(e.data)) {
+    e.preventDefault();
+  }
+}, true); // Use capture phase (true) to catch events reliably
+
+document.addEventListener('input', (e) => {
+  if (!e.target.dataset.autocomplete || !e.target.list || e.constructor.name !== 'Event') {
+    return;
+  }
+  if (autoComplete[e.target.dataset.autocomplete]) {
+    autoComplete[e.target.dataset.autocomplete](e.target);
+    e.target.blur();
+  }
+});
+
+/*
+document.addEventListener('focusin', (event) => {
+  if (event.target.tagName === 'INPUT') {
+    console.log('focusin', event.target);
+    //event.target.select();
+  }
+});
+*/
+
+document.addEventListener('focusout', (event) => {
+  if (D.MOBILE) {
+    if (event.target?.tagName?.match(/INPUT|SELECT/)) {
+      event.target.disabled = true;
+    }
+  }
+});
+
+function exportClick() {
+  const dialog = _('exportDialog');
+  dialog.addEventListener('close', function closeEvent() {
+    if (dialog.returnValue === 'export') {
+      setTimeout(() => reExport(_('nom_export').value), 5);
+    }
+    dialog.removeEventListener('close', closeEvent);
+  });
+  dialog.showModal();
+}
+
+function reExport(name) {
+  // 1. Copy live input values into their respective HTML attributes
+  _('nom_html').textContent = name;
+  qa('input').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      if (el.checked) {
+        el.setAttribute('checked', 'checked');
+      } else {
+        el.removeAttribute('checked');
+      }
+    } else {
+      el.setAttribute('value', el.value);
+    }
+  });
+
+  qa('textarea').forEach(el => {
+    el.textContent = el.value; // Textarea stores value in text content
+  });
+
+  qa('select').forEach(el => {
+    el.querySelectorAll('option').forEach(opt => {
+      if (opt.selected) {
+        opt.setAttribute('selected', 'selected');
+      } else {
+        opt.removeAttribute('selected');
+      }
+    });
+  });
+
+  const titleToReplace = document.head.querySelector('title').outerHTML;
+  const titleReplacement = '<title>' + name + '</title>';
+
+
+
+    // Get the current live HTML content of the entire document
+  const htmlContent = "<!DOCTYPE html>\n" +
+    document.documentElement.outerHTML
+      .replace(titleToReplace, titleReplacement)
+      .replace(/data-saveid="[0-9]+/,'data-saveid="' + Date.now())
+
+
+  
+  // Create a Blob with the HTML data
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  
+  // Create a temporary download link
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name + '.html';
+  
+  // Append to body, click it programmatically, and remove it
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  // Clean up the object URL
+  URL.revokeObjectURL(a.href);
+}
+
+function setupOneTemplate(tpl) {
+  if (tpl.dataset.done) {
+    return; // already done
+  }
+  if (tpl.dataset.save) {
+    // template special pour saving throws géré ailleurs
+    return;
+  }
+  const tok = tpl.dataset.tok;
+  const from = parseInt(tpl.dataset.from) || 0;
+  const to = parseInt(tpl.dataset.to) || 0;
+  if (!tok || !to) {
+    console.warn('Template invalide: ', tpl);
+    return;
+  }
+  let insertAfter = tpl;
+  for (let i = from; i < to; i++) {
+    const clone = tpl.content.cloneNode(true);
+    const div = document.createElement('div');
+    for (const child of clone.children) {
+      div.appendChild(child);
+    }
+    div.innerHTML = div.innerHTML.replaceAll(tok, i);
+    for (const child of div.children) {
+      insertAfter.after(child);
+      insertAfter = child;
+    }
+  }
+  tpl.dataset.done = true;
+}
+
+// Seulement pour les noeuds de type "<template>"
+// il servent à répéter X fois un tag HTML non dépendant d'aucune configuration
+// Ne pas confondre aved data-tpl qui est dynamique 
+function setupAllTemplates() {
+  for (const tpl of document.querySelectorAll('template')) {
+    setupOneTemplate(tpl);
+  }
+}
+
+function saveAllInputs(pg, lines) {
+  const inputs = pg.querySelectorAll('input, select');
+  for (let i of inputs) {
+    if (isNotVu(i)) {
+      continue;
+    }
+    const id = i.id || 'UNKNOWN';
+    const val = i.value;
+    lines.push(id + ': ' + val);
+  }
+}
+
+let missingIds = [];
+
+function getTxtContent(tgl) {
+  if (tgl.parentElement.id !== 'boosts') {
+    return tgl.textContent.split('(')[0].trim();
+  }
+  let retVal = tgl.textContent.trim();
+  if (tgl.dataset.after_dices) {
+    retVal += ' ' + tgl.dataset.after_dices + ' ' +
+      tgl.dataset.dices.replaceAll(',','-').replaceAll(':','|');
+  }
+  if (tgl.classList.contains('on')) {
+    retVal += ' ON';
+  }
+  return retVal;
+}
+
+function saveAllToggles(pg, lines) {  
+  const sel = (pg.id === 'buffs') ? '.tgl' : '.on';
+  const toggles = pg.querySelectorAll(sel);
+  const perId = {}
+  for (let t of toggles) {
+    const parentId = t.parentNode.id;
+    if (!parentId) {
+      console.warn('missing id', t.parentNode);
+      missingIds.push(t.parentNode);
+      continue;
+    }
+    const txt = getTxtContent(t);
+    if (txt === '') {
+      continue;
+    }
+    if (!perId[parentId]) {
+      perId[parentId] = [ txt ]; 
+    } else {
+      perId[parentId].push(txt);
+    }        
+  }
+  for (const [id, arr] of Object.entries(perId)) {
+    const sep = arr.length <= 3 ? ',' : ',\n  ';
+    lines.push(id + ':' + arr.join(sep));
+  }
+}
+
+function saveEquipPage(pg, lines) {
+  for (const li of pg.querySelectorAll('li')) {
+    let ln = li.id + ': ';
+    const spans = li.querySelectorAll('.long');
+    if ((spans[0].textContent === '') || spans[0].textContent.includes('Unarmed') ) {
+      if (!spans[1] || (spans[1].textContent === '')) {
+        continue;
+      }
+    }
+    ln += spans[0].textContent;
+    if ( (spans.length > 1) && (spans[1].textContent !== '') ) {
+      ln += ',\n   ' + spans[1].textContent;
+    }
+    if (li.id[0] === 'e') {
+      if (li.classList.contains('on')) {
+        ln += ' ON';
+      } else {
+        ln += ' OFF';
+      }
+    }
+    lines.push(ln);
+  }
+}
+
+function savePage(pg, lines) {
+  if (pg.id === 'combat') {
+    return; // not saved
+  }
+  lines.push('PAGE ' + pg.id);
+  if (pg.id  === 'equip') {
+    saveEquipPage(pg, lines);
+  } else {
+    saveAllInputs(pg, lines);
+    saveAllToggles(pg, lines);
+  }
+  lines.push('');
+}
+
+function saveAll() {
+  const lines = [];
+  for (let pg of qa('.pg')) {
+    savePage(pg, lines);
+  }
+  return lines;
+
+  // Par Pages:
+
+  // Toggles / Menu = ON
+
+  // Inputs (sauf equip)
+
+  // Groupes Armes
+
+  // Selects
+
+
+}
+
+function restoreVal(id, val) {
+  const target = _(id);
+  if (!target) {
+    console.warn('Unknown Element ID: ', id);    
+    return;
+  }
+  if ((target.tagName === 'INPUT') || (target.tagName === 'SELECT')) {
+    target.value = val.trim();
+  } else {
+    const toggles = val.split(',');
+    const mustBeOn = {};
+    for (const tgl of toggles) {
+      mustBeOn[tgl.trim()] = true;
+      if (id === "feats") {
+        D.CURR_FEATS[getFeatName(tgl)] = true;
+      }
+    }
+    for (const el of target.children) {
+      const txt = el.textContent.split('(')[0].trim();
+      if (mustBeOn[txt]) {
+        el.classList.add('on');
+      } else {
+        el.classList.remove('on');
+      }
+    }
+  }
+}
+
+function restorePage(lines) {
+  const pageId = lines[0].trim();
+  if (!pageId) {
+    return;
+  }
+  const page = _(pageId);
+  if (!page) {
+    console.warn('Unknown page: ', pageId);    
+    return;
+  }
+  for (let i = 1; i < lines.length; i++) {
+    const ln = lines[i];
+    const tokens = ln.split(':');
+    const id = tokens[0];
+    const val = tokens[1].trim();
+    restoreVal(id, val);
+  }
+}
+
+function restoreBuffs(lines) {
+  const ln = lines[1];
+  const tokens = ln.split(':');
+  const val = tokens[1].trim();
+  const filler = q('#boosts .filler');
+  filler.remove();
+  const boosts = _('boosts');
+  boosts.textContent = '';
+  boosts.appendChild(filler);
+  const toggles = val.split(',');
+  for (const tgl of toggles) {
+    const nomParenthesis = tgl.split('(');
+    const nom = nomParenthesis[0].trim();
+    const parenthesisNmore = nomParenthesis[1].split(')');
+    const parenthesis = '(' + parenthesisNmore[0] + ')';
+    const more = parenthesisNmore[1];
+    const finalTokens = more?.split(' ') || [];
+    if (finalTokens.length > 2) {
+      const on = finalTokens.pop();
+      const afterDices = finalTokens[1];
+      const dices = finalTokens[2].replaceAll('-',',').replaceAll('|',':');
+      createBoost(nom, parenthesis, on, afterDices, dices);
+    } else {
+      createBoost(nom, parenthesis, finalTokens.pop());
+    }
+  }
+}
+
+function extractIcon(id) {
+  return _(id).textContent.split(/[1-9a-zA-Z]/)[0];
+}
+
+D.SUB_ICONS = {
+  '1h': extractIcon('manip_1h'),
+  '2h': extractIcon('manip_2h'),
+  'equip': extractIcon('autre'),
+  'armor': extractIcon('armure'),
+  'm': extractIcon('typ_m'),
+  'r': extractIcon('typ_r'),
+  't': extractIcon('typ_t'),
+  's': extractIcon('typ_s')
+}
+D.SUB_ICONS.h = D.SUB_ICONS['1h'];
+
+function restoreShort(long) {
+  const tokens = tokenizeLong(long);
+  const sub = tokens[0];
+  let txt = D.SUB_ICONS[sub];
+  let start = 2;
+  if ((sub === '1h') || (sub === '2h')) {
+    txt += D.SUB_ICONS[tokens[1]];
+    txt += tokens[2];
+    start = 3;
+  } else {
+    txt += tokens[1];
+  }
+  for (let i = start; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t === 'masterwork') {
+      txt += ' Masterwork';
+    }
+    if (t === 'defending') {
+      txt += ' Defending';
+    } else if (t.match(D.TOKEN_REGEXP.bonus)) {
+      txt += ' ' + t;
+    } else if (t.match(D.TOKEN_REGEXP.bonusArmor) && tokens[0] === 'armor') {
+      txt += ' ' + t.replace('eac', '');
+    }
+  }
+  return txt;
+}
+
+function revertShortHand(el, rs) {
+  el.textContent = '';
+  el.appendChild(revertH());
+  el.append(rs.replace(D.SUB_ICONS.h, ''));
+}
+
+function restoreGroupeArmes(id, rest) {
+  const el = _(id);
+  const longs = el.querySelectorAll('.long');
+  const shorts = el.querySelectorAll('.short');
+  const savedLongs = rest.split(',');
+  for (let i = 0; i < savedLongs.length; i++) {
+    longs[i].textContent = savedLongs[i].trim();
+    const rs = restoreShort(savedLongs[i].trim());
+    if (i > 0) {
+      revertShortHand(shorts[i], rs);
+    } else {
+      shorts[i].textContent = rs;
+    }
+  }
+}
+
+function restoreAutreEquip(id, rest) {
+  const el = _(id);
+  const long = el.querySelector('.long');
+  const short = el.querySelector('.short');
+  long.textContent = rest.replace(' ON', '').replace(' OFF', '').trim();
+  short.textContent = restoreShort(rest);
+  if (rest.endsWith('ON')) {
+    el.classList.add('on');
+  } else {
+    el.classList.remove('on');
+  }
+}
+
+/*
+PAGE equip
+g1: (1h/m/Battleaxe/1d8),
+   (1h/s/Buckler/+1sac)
+g2: (2h/r/Composite-Shortbow/1d6/+2maxstr/70ft)
+e1: (armor/Chainshirt/+4aac/maxdex=+4) ON
+e2: (equip/Amulet of Health +6/+6econ) OFF
+*/
+function restoreEquip(lines) {
+  for (let i = 1; i < lines.length; i++) {
+    const ln = lines[i];
+    const idNrest = ln.split(': ');
+    const id = idNrest[0];
+    if (id[0] === 'g') {
+      restoreGroupeArmes(id, idNrest[1]);
+    } else {
+      restoreAutreEquip(id, idNrest[1]);
+    }
+  }
+}
+
+function loadTest() {
+  restoreTest();
+}
+
+function restoreAll(data) {
+  let saveData = data || lsGet('dnd') || D.DEFAULT_BOOSTS;
+  const pages = saveData.replaceAll(',\n', ',').split('PAGE ');
+  for (const p of pages) {
+    const lines = p.trim().split('\n');
+    if (lines[0] === 'equip') {
+      restoreEquip(lines);
+    } else if (lines[0] === 'buffs') {
+      restoreBuffs(lines);
+    } else {
+      restorePage(lines);
+    }
+  }  
+  selectGroupeArmes(q('.mnu.armes .on'));
+  rafraichi();
+}
+
+function findDuplicateIds() {
+  const idCounts = {};
+  const allElements = document.querySelectorAll('[id]');
+  let duplicatesFound = false;
+
+  allElements.forEach(el => {
+    const id = el.id;
+    if (id) {
+      idCounts[id] = (idCounts[id] || 0) + 1;
+    }
+  });
+
+  for (const id in idCounts) {
+    if (idCounts[id] > 1) {
+      console.warn(`Duplicate ID found: "#${id}" appears ${idCounts[id]} times.`);
+      duplicatesFound = true;
+    }
+  }
+
+  if (!duplicatesFound) {
+    console.log("Success! No duplicate IDs found on this page.");
+  }
+}
+
+function pressePapier(el) {
+  const txtArea = el.closest('dialog').querySelector('textarea');
+  txtArea.select();
+  try {
+    document.execCommand("copy");
+    alert("Copié avec succès!");
+  } catch (err) {
+    console.error("Failed to copy", err);
+  }
+}
+
+function showRawData() {
+  const txtArea = _('txtAreaRaw');
+  txtArea.value = lsGet('dnd');
+  _('rawData').showModal();
+  setTimeout(() => {
+    txtArea.scrollTop = 0;
+    txtArea.scrollLeft = 0;
+  }, 20);
+}
+
+function disableAllInputs() {
+  for (const el of qa('input,select')) {
+    el.disabled = true;
+  }
+}
+
+if (navigator.userAgentData.mobile) {
+  D.MOBILE = true;  
+  document.documentElement.classList.add('mobile');
+  document.documentElement.classList.remove('pc');
+  disableAllInputs();
+} else {
+  D.MOBILE = false;
+  document.documentElement.classList.add('pc');
+  document.documentElement.classList.remove('mobile');
+}
+
+findDuplicateIds();
+
+setupAllTemplates();
+
+restoreAll();
+
+rafraichi();
+</script>
+
+</body></html>

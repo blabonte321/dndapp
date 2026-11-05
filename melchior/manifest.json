@@ -1,0 +1,14 @@
+{
+  "name": "Melchior",
+  "short_name": "Melchior",
+  "start_url": "/dndapp/melchior/melchior.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/dndapp/d20.png",
+      "sizes": "516x594",
+      "type": "image/png"
+    }
+  ]
+}
