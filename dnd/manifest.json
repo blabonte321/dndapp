@@ -1,0 +1,14 @@
+{
+  "name": "DnD",
+  "short_name": "DnD",
+  "start_url": "/dndapp/dnd/dnd.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/dndapp/d20.png",
+      "sizes": "240x240",
+      "type": "image/png"
+    }
+  ]
+}
