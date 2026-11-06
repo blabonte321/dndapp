@@ -6,8 +6,13 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/dndapp/d20.png",
-      "sizes": "516x594",
+      "src": "/dndapp/d20-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/dndapp/d20-512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
