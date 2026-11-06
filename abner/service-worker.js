@@ -4,7 +4,9 @@ self.addEventListener('install', event => {
         caches.open('app-cache').then(cache => {
             console.log('Caching app shell');
             return cache.addAll([
-                '../d20.png',
+                '../favicon.ico',
+                '../d20-192x192.png',
+                '../d20-512x512.png',
                 './manifest.json',
                 './abner.html'
             ]);
