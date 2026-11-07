@@ -1775,8 +1775,9 @@ html.pc dialog {
     
     <div data-vu="rumpy" class="nfo">Rumpy Specials</div>
     <div data-vu="rumpy" class="mnu" id="rumpySpecials">
+      <div class="tgl vilain">Vilain!<span>(+2ltch)</span></div>
       <div class="tgl holy">Holy vs Evil</div>
-      <div data-vu="notfr" class="tgl smite">Smite Evil</div>
+      <div data-vu="stdAtk" class="tgl smite">Smite Evil</div>
     </div>
 
     <div data-vu="paladinspecials" class="nfo">Paladin Specials</div>
@@ -1790,8 +1791,10 @@ html.pc dialog {
       <div class="duskheal">Healing⛨</div>
       <div class="chill">Chill❄️</div>
     </div>
-    <div data-vu="duskblade" data-ontgl="confirmBladeOfBlood" class="mnu">
-      <div class="tgl baleful">Blade of Blood (-5hp)🩸</div>
+    <div data-vu="duskbladeSwift" class="nfo">Duskblade (swift action)</div>
+    <div data-vu="duskbladeSwift" data-ontgl="confirmBladeOfBlood" class="mnu offable">      
+      <div class="baleful">Blade🩸(3d6,-5hp)</div>
+      <div class="baleful1">Blade🩸(1d6)</div>
     </div>
 
     <div data-vu="principale defending" class="nfo">Defending Main Principale</div>
@@ -1818,7 +1821,7 @@ html.pc dialog {
         TPL_VAL <span>(+2udmg)</span>
       </div>
     </div>
-    <div id="version">version: 2026-11-05_19:47:43</div>
+    <div id="version">version: 2026-11-07_11:36:38</div>
 
   </div>
 
@@ -3093,7 +3096,7 @@ function calculeBuffRumpy(retVal) {
     return;
   }
   calculeUnBuff(
-    { textContent: 'Rumpy (+2udmg/+2ltch/+2lsav)'} ,
+    { textContent: 'Rumpy (+2edmg/+2lsav_Chaotic-Evil)'} ,
     retVal
   );
 }
@@ -3576,20 +3579,23 @@ function specialPaladinDmg(retVal) {
 }
 
 function applyDuskbladeDmg(retVal) {
-  if (!duskbladeVU()) {
-    return;
+  if (duskbladeVU()) {
+    if (q('.shocking.on')) {
+      microCumuleDice(retVal, "Duskblade", "Shocking Grasp", "+5d6⚡");
+    }
+    if (q('.duskheal.on')) {
+      microCumuleDice(retVal, "Duskblade", "Healing", "+1d8+5⛨");
+    }
+    if (q('.chill.on')) {
+      microCumuleDice(retVal, "Duskblade", "Chill", "+1d6❄️");
+    }
   }
-  if (q('.shocking.on')) {
-    microCumuleDice(retVal, "Duskblade", "Shocking Grasp", "+5d6⚡");
-  }
-  if (q('.duskheal.on')) {
-    microCumuleDice(retVal, "Duskblade", "Healing", "+1d8+5⛨");
-  }
-  if (q('.chill.on')) {
-    microCumuleDice(retVal, "Duskblade", "Chill", "+1d6❄️");
-  }
-  if (q('.baleful.on')) {
-    microCumuleDice(retVal, "Duskblade Swift", "Blade of Blood", "+3d6🩸");
+  if (duskbladeSwiftVU()) {
+    if (q('.baleful.on')) {
+      microCumuleDice(retVal, "Duskblade Swift", "Blade of Blood (swift)", "+3d6🩸");
+    } else if (q('.baleful1.on')) {
+      microCumuleDice(retVal, "Duskblade Swift", "Blade of Blood (swift)", "+1d6🩸");
+    }
   }
 }
 
@@ -4315,8 +4321,13 @@ function leapAttackVU() {
 }
 
 function duskbladeVU() {
-  return D.CURR_FEATS?.duskbladechanneling && (D.TYP_ATK !== 'fr');
+  return D.CURR_FEATS?.duskbladechanneling && (D.TYP_ATK === 'std');
 }
+
+function duskbladeSwiftVU() {
+  return D.CURR_FEATS?.duskbladechanneling;
+}
+
 
 function featVU(el) {  
   const featName = el.dataset.vu.replace('feat ', '');
@@ -4366,7 +4377,7 @@ function rumpyVU() {
 }
 
 function paladinVU() {
-  return D.CURR_FEATS?.paladinpowers && (D?.TYP_ATK !== 'fr');
+  return D.CURR_FEATS?.paladinpowers && (D?.TYP_ATK === 'std');
 }
 
 // Fonctions de controle de la visibilite spéciales
@@ -4380,7 +4391,8 @@ D.VU = {
   armedemelee: armeDeMeleeVU,
   leapattack: leapAttackVU,
   duskblade: duskbladeVU,
-  notfr: () => D?.TYP_ATK !== 'fr',
+  duskbladeSwift: duskbladeSwiftVU,
+  stdAtk: () => D?.TYP_ATK === 'std',
   paladinspecials: paladinVU
 }
 
@@ -5591,6 +5603,7 @@ function touche(event) {
       cl.add('on');
     }
     D.SWAP_FN[parent.dataset.onswap]?.(el);
+    D.TGL_FN[parent.dataset.ontgl]?.(el);
   } else if (el.id === 'fullscreen') {
     makeFullScreen();
   } else {
