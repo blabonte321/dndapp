@@ -1821,7 +1821,7 @@ html.pc dialog {
         TPL_VAL <span>(+2udmg)</span>
       </div>
     </div>
-    <div id="version">version: 2026-11-07_11:36:38</div>
+    <div id="version">version: 2026-11-08_15:17:25</div>
 
   </div>
 
@@ -2073,12 +2073,32 @@ html.pc dialog {
 
 <script>
 if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/dndapp/dnd/service-worker.js');
+  // Check if there are query parameters on launch
+  if (window.location.search) {
+    // Replace the current history state with a clean URL (keeping the path, dropping search params)
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+  window.addEventListener('load', async () => {
+    const registration = await navigator.serviceWorker.register('/dndapp/dnd/service-worker.js');
+    
+    // Periodically check for updates (e.g., every hour or on visibility change)
+    setInterval(() => {
+      registration.update();
+    }, 1000 * 60 * 60);
+
+    // Listen for a new service worker taking over and reload the page
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('controllerchange');
+      if (refreshing) { return; }
+      refreshing = true;
+      window.location.reload();
+    });
+
+    registration.update(); // immediately checks for update also
   });
 }
-
-
 // dnd.js
 
 // section compatibilité vieux téléphones

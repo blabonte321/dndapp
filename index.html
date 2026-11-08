@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DnD</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DnD</title>
+  <script>
+    function addTimeStamps() {
+      const toks = window.location.href.split('?t=');
+      const t = (!toks[1] || isNaN(toks[1])) ? 0 : parseInt(toks[1]);
+      const now = (new Date()).getTime();
+      const diff = now - t;
+      const maxDiff = 1000 * 60; // 1 minute
+      if (diff > maxDiff) {
+        // reload with fresh HTML
+        window.location.href = toks[0] + '?t=' + now;
+      } else {
+        // Make sure all links use dummy argument to prevent cache
+        document.querySelectorAll('a').forEach(a => a.href += '?t=' + t);
+      }
+    }
+    setTimeout(addTimeStamps, 20);
+  </script>
 </head>
 <body>
     <h1>Utilitaire</h1>
@@ -17,18 +34,4 @@
     <a href="melchior/melchior.html">Melchior</a><br>
     <a href="milo/milo.html">Milo</a><br>
 </body>
-<script>
-  const toks = window.location.href.split('?t=');
-  const t = (!toks[1] || isNaN(toks[1])) ? 0 : parseInt(toks[1]);
-  const now = (new Date()).getTime();
-  const diff = now - t;
-  const maxDiff = 1000 * 60; // 1 minute
-  if (diff > maxDiff) {
-    // reload with fresh HTML
-    window.location.href = toks[0] + '?t=' + now;
-  } else {
-    // Make sure all links use dummy argument to prevent cache
-    document.querySelectorAll('a').forEach(a => a.href += '?t=' + t);
-  }
-</script>
 </html>

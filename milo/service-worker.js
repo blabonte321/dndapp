@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = 'appCache1794072989886';
+const CACHE_NAME = 'appCache1794169358458';
 
 const ASSETS_TO_CACHE = [
   '/favicon.ico',
