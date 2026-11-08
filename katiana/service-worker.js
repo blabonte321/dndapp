@@ -1,12 +1,12 @@
 // service-worker.js
-const CACHE_NAME = 'appCache1794169358458';
+const CACHE_NAME = 'appCache1794169844250';
 
 const ASSETS_TO_CACHE = [
-  '/favicon.ico',
-  '/d20-192x192.png',
-  '/d20-512x512.png',
-  '/manifest.json',
-  '/katiana.html'
+  '/dndapp/favicon.ico',
+  '/dndapp/d20-192x192.png',
+  '/dndapp/d20-512x512.png',
+  '/dndapp/katiana/manifest.json',
+  '/dndapp/katiana/katiana.html'
 ];
 
 // 1. Install Event: Cache app shell and force immediate activation
