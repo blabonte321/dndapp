@@ -1244,7 +1244,7 @@ html.pc dialog {
 </head>
 
 <body>
-  <pre id="savedData" data-saveid="1794171222960">PAGE stats
+  <pre id="savedData" data-saveid="1794347590916">PAGE stats
 lvl: 7
 bab: 4
 str: 9
@@ -1272,9 +1272,9 @@ feats:Spellwise,
   Familiar: Rat
 
 PAGE equip
-g1: (1h/m/Dagger/1d4/+1),
+g1: (1h/m/Dagger/1d4/19-20x2/+1),
    (1h/s/Mithral-Buckler/+1sac)
-g2: (1h/t/Dagger/1d4/+1/10ft),
+g2: (1h/t/Dagger/1d4/19-20x2/+1/10ft),
    (1h/s/Mithral-Buckler/+1sac)
 e1: (equip/Cloak of Resistance +2/+2rsav) ON
 e2: (equip/Ring of Protection +1/+1fac) ON
@@ -1449,6 +1449,21 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
         <div>2d4</div>
         <div>2d6</div>
       </div>
+
+      <div class="mnu" data-key="critThreat1" data-ltitle="Dé de crit.:" data-vis="nom1">
+        <div>20</div>
+        <div>19-20</div>
+        <div>18-20</div>
+        <div>17-20</div>
+        <div>16-20</div>
+      </div>
+
+      <div class="mnu" data-key="critFactor1" data-ltitle="Multiplicateur de crit.:" data-vis="nom1">
+        <div>x2</div>
+        <div>x3</div>
+        <div>x4</div>
+      </div>
+
       <div class="mnu" data-key="bonus1" data-ltitle="Bonus:" data-vis="qual1~Magique">
         <div>+1</div>
         <div>+2</div>
@@ -1533,6 +1548,22 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
         <div>2d4</div>
         <div>2d6</div>
       </div>
+
+      
+      <div class="mnu" data-key="critThreat2" data-ltitle="Dé de crit.:" data-vis="nom2&amp;typ2!~Shield">
+        <div>20</div>
+        <div>19-20</div>
+        <div>18-20</div>
+        <div>17-20</div>
+        <div>16-20</div>
+      </div>
+
+      <div class="mnu" data-key="critFactor2" data-ltitle="Multiplicateur de crit.:" data-vis="nom2&amp;typ2!~Shield">
+        <div>x2</div>
+        <div>x3</div>
+        <div>x4</div>
+      </div>
+      
       <div class="mnu" data-key="bonus2" data-ltitle="Bonus:" data-vis="qual2~Magique">
         <div>+1</div>
         <div>+2</div>
@@ -1905,7 +1936,13 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
         TPL_VAL <span>(+2udmg)</span>
       </div>
     </div>
-    <div id="version">version: 2026-11-08_15:53:42</div>
+    <div id="version">version: 2026-11-10_16:53:10</div>
+
+    <div data-vu="notTrollUnarmed" class="nfo">Critical Hit</div>
+    <div data-vu="notTrollUnarmed" class="mnu">
+      <div class="tgl" id="crit1"></div>
+      <div data-vu="armeSecondaire" class="tgl" id="crit2"></div>
+    </div>
 
   </div>
 
@@ -2728,6 +2765,22 @@ function isIgnored(span) {
   return isNotVu(span);
 }
 
+function multiply(v, x) {
+  const dice = detectDice(v);
+  if (dice) {
+    const p = parseInt(v.split('+')[1] || 0);
+    const d = dice[0].split('d');
+    const n = parseInt(d[0]);
+    if (p) {
+      return Math.floor(n * x) + 'd' + d[1] + '+' + Math.floor(p * x);
+    } else {
+      return Math.floor(n * x) + 'd' + d[1];
+    }
+  } else {
+    return Math.floor(v * x);
+  }
+}
+
 function microCumule(retVal, keyword, details, nom, mod) {
   if (!retVal[keyword]) {
     retVal[keyword] = {
@@ -2748,8 +2801,8 @@ function microCumule(retVal, keyword, details, nom, mod) {
   } else if (mod.match?.(/^x[0-9]/)) {
     // multiplicateur (ex: force x0.5)
     const x = parseFloat(mod.replace('x', ''));
-    const v = retVal[keyword].val;
-    retVal[keyword].val = Math.floor(x * v);
+    const v = retVal[keyword].val;    
+    retVal[keyword].val = multiply(v, x);
   }
   retVal[keyword].parts[nom] = mod;
 }
@@ -2825,6 +2878,9 @@ function cummuleEffect(nom, e, retVal) {
   if ((nom === 'f') && (e === 'x')) {
     // ignore (f/x) caption on buff editor;
     return;
+  }
+  if (nom === 'Blade🩸') {
+    return; // ignored
   }
   if (e.indexOf('=') > 0) {
     cummuleSpecial(nom, e, retVal);
@@ -3093,11 +3149,12 @@ function calcule(table, name) {
   let prefix = '';
   let suffix = '';
   for (let r of related) {
-    if (detectDice(r.val)) {
-      if (prefix) {
+    if (detectDice(r.val)) {      
+      if (prefix && (r.val[0] === '+')) {
         suffix += ' ' +r.val;
       } else {
         prefix = r.val;
+        retVal = 0;
       }
     } else {
       retVal += parseInt(r.val);
@@ -3292,7 +3349,9 @@ D.UNARMED_DEFAULT = {
   de: '1d3',
   dmg: 0,
   tch: 0,
-  main: true
+  main: true,
+  critThreat: '20',
+  critFactor: 'x2'
 }
 
 function convertArme(data, nb) {
@@ -3323,7 +3382,7 @@ function getArmes() {
       de: '',
       main: false,
       dmg: 0,
-      tch: 0,
+      tch: 0
     }
   } else {
     ret[1] = convertArme(s, 2);
@@ -3415,6 +3474,8 @@ D.TROLLATK = {
     lbl: "Troll Claw",
     typ: SW + "Melee",
     de: "1d6",
+    critFactor: 'x2',
+    critThreat: '20',
     dmg: 6,
     tch: 9,
     main: true
@@ -3423,6 +3484,8 @@ D.TROLLATK = {
     lbl: "2nd Troll Claw",
     typ: SW + "Melee",
     de: "1d6",
+    critFactor: 'x2',
+    critThreat: '20',
     dmg: 6,
     tch: 9,
     main: false
@@ -3433,6 +3496,8 @@ D.TROLLATK = {
     typ: SW + "Melee",
     de: "1d6",
     dmg: 3,
+    critFactor: 'x2',
+    critThreat: '20',
     tch: 4,
     main: false
   },
@@ -3710,7 +3775,6 @@ function applySpecialDmg(retVal, w) {
   if (w.nom === 'Rumpy') {
     specialRumpyDmg(retVal);
   }
-  specialPaladinDmg(retVal);
 }
 
 function applySneakAttack(retVal) {
@@ -3718,6 +3782,15 @@ function applySneakAttack(retVal) {
     const dice = q('#sneak_dice .on').textContent;
     microCumuleDice(retVal, "Sneak Attack", 'Dés de sneak', '+' + dice);
   }
+}
+
+function applyCriticalHit(retVal, w) {
+  if (!q(w.main ? '#crit1.on' : '#crit2.on')) {
+    return;
+  }  
+  const sousTotal = calcule(retVal);
+  microCumuleAP(retVal, "Critical Hit", 'Sous-Total', sousTotal);
+  microCumuleAP(retVal, "Critical Hit", 'Multiplicateur', w.critFactor);
 }
 
 function generateDmgTbl(l, armes) {
@@ -3744,10 +3817,13 @@ function generateDmgTbl(l, armes) {
      || v.details.stat === 'weap'
   ));
   applyPowerAttack(retVal, w);
+  specialPaladinDmg(retVal);
+  applyCriticalHit(retVal, w);
+
   applySpecialDmg(retVal, w);
   applyDuskbladeDmg(retVal, w);
   applySneakAttack(retVal);
-  
+    
   D.TABLE_COMBAT[dmgKey] = retVal;
   return retVal;
 }
@@ -3766,9 +3842,13 @@ function afficheOutOfRange(obj, done, table) {
 }
 
 function updateRevertHand(src, dest) {
+  const suffix = src.textContent.replace(D.SUB_ICONS['1h'], '');
+  if (suffix === src.textContent) {
+    return;
+  }
   dest.textContent = '';
   dest.appendChild(revertH());
-  dest.append(src.textContent.replace(D.SUB_ICONS.h, ''));
+  dest.append(suffix);
 }
 
 function updateCell(src, dest) {
@@ -3823,8 +3903,18 @@ function updateTable(src, dest) {
   }
 }
 
+function rafraichiCrits(w) {
+  q('#crit1').textContent = w[0].lbl + ': ' + w[0].critThreat + w[0].critFactor;
+  if (w[1]?.critFactor) {
+    const crit2 = q('#crit2');
+    crit2.textContent = w[1].lbl + ': ' + w[1].critThreat + w[1].critFactor;
+    updateRevertHand(crit2, crit2);
+  }
+}
+
 function rafraichiArmes() {
   D.ARMES = getArmes();
+  rafraichiCrits(D.ARMES);
   D.ATK_TBL = D.LOGIQUE_ATTAQUES.filter(l =>
     l.conditions.reduce((p, v) => p && D.CONDITIONS_ATK[v](), true)
   ).map(l => ({ ...l,
@@ -4142,6 +4232,14 @@ function autoMain(el, nb) {
   setField(valGroup, 'incr' + nb, obj.increment && obj.increment.split(' ')[0]);  
   setField(valGroup, 'shield' + nb, obj.ac && ('+' + obj.ac));
   setField(valGroup, 'maxdex' + nb, obj.maxdex);
+  if (obj.crit) {
+    let dM = obj.crit.split('/');
+    if (!dM[1]) {
+      dM = ['20', dM[0]];
+    }
+    setField(valGroup, 'critThreat' + nb, dM[0]);
+    setField(valGroup, 'critFactor' + nb, dM[1]);
+  }
   if (!isNaN(obj.maxdex) && obj.maxdex !== 'N/A') {
     setField(valGroup, 'malusTch' + nb, '-2');
   } else {
@@ -4484,6 +4582,11 @@ function paladinVU() {
   return D.CURR_FEATS?.paladinpowers && (D?.TYP_ATK === 'std');
 }
 
+function armeSecondaireVU() {
+  const s = D.GROUP_ARMES_SELECTED;
+  return s.typ2?.match(/[M|R|T]/);
+}
+
 // Fonctions de controle de la visibilite spéciales
 D.VU = {
   feat: featVU,
@@ -4496,8 +4599,10 @@ D.VU = {
   leapattack: leapAttackVU,
   duskblade: duskbladeVU,
   duskbladeSwift: duskbladeSwiftVU,
+  armeSecondaire: armeSecondaireVU,
   stdAtk: () => D?.TYP_ATK === 'std',
-  paladinspecials: paladinVU
+  paladinspecials: paladinVU,
+  notTrollUnarmed: () => !trollua()
 }
 
 function select1stAvailOpt(el) {
@@ -4809,6 +4914,8 @@ D.SERIALIZE_LONG = {
   plus: v => '/' + v,
   typb: v => D.BONUS_REVERSE[v],
   stat: v=> D.TARGET_REVERSE[v],
+  critThreat: v => v ? ('/' + v) : '',
+  critFactor: v => v ? v : '',
   fn: v => '/' + v,
   specDmg: v => v  ? ('/specDmg=' + v) : ''
 }
@@ -4884,6 +4991,7 @@ D.TOKEN_REGEXP = {
   bonusArmor: /^\+[0-9]+eac$/,
   malusTch: /^-[0-9]+utch$/,
   specDmg: /^specDmg=.+$/,
+  crit: /20x[2,3,4]$/
 }
 
 function defaultTokenProcess(key, data, token) {
@@ -4916,6 +5024,13 @@ D.TOKEN_PROCESS = {
   },
   specDmg: (k, d, t) => {
     d[k] = t.split('=')[1];
+  },
+  crit: (k, d, t) => {
+    const tt = t.split('x');
+    const critThreat = k.replace('crit', 'critThreat');
+    const critFactor = k.replace('crit', 'critFactor');
+    d[critThreat] = tt[0];
+    d[critFactor] = 'x' + tt[1];
   }
 }
 
