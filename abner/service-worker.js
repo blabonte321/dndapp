@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = 'appCache1795367046844';
+const CACHE_NAME = 'appCache1795367411142';
 
 const ASSETS_TO_CACHE = [
   '/dndapp/favicon.ico',

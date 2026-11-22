@@ -1296,7 +1296,7 @@ html.pc dialog {
 </head>
 
 <body>
-  <pre id="savedData" data-saveid="1795366991148">PAGE stats
+  <pre id="savedData" data-saveid="1795367394114">PAGE stats
 lvl: 8
 bab: 6
 str: 18
@@ -2001,7 +2001,7 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
         TPL_VAL <span>(+2udmg)</span>
       </div>
     </div>
-    <div id="version">version: 2026-11-22_12:03:10</div>
+    <div id="version">version: 2026-11-22_12:09:53</div>
 
     <div data-vu="notTrollUnarmed" class="nfo">Critical Hit</div>
     <div data-vu="notTrollUnarmed" class="mnu">
@@ -2295,8 +2295,8 @@ if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
   const dismissBtn = document.getElementById('dismiss-btn');
   const installText = _('install-text');
 
-  function installIn1Sec() {
-    setTimeout(() => installBanner.style.display = 'flex', 1000);
+  function installInASec() {
+    setTimeout(() => installBanner.style.display = 'flex', 3000);
   }
 
   // Check if the app is already installed
@@ -2310,7 +2310,7 @@ if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
     deferredPrompt = e;
 
     if (!isStandalone) {
-      installIn1Sec();
+      installInASec();
     }
   });
 
@@ -2336,7 +2336,7 @@ if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
     installText.innerHTML = 'Appuyez sur l\'icône <strong>Partager</strong>' +
       ' ci-dessous, puis sélectionnez <strong>Sur l\'écran d\'accueil</strong>.';
     installBtn.style.display = 'none';
-    installIn1Sec();
+    installInASec();
   }
 
   dismissBtn.addEventListener('pointerdown', () => {
