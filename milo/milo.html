@@ -15,6 +15,58 @@ body {
   user-select: none;
 }
 
+.install-banner {
+  position: fixed;
+  top: 36px;
+  left: 16px;
+  right: 16px;
+  max-width: 420px;
+  margin: 0 auto;
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.install-content {
+  font-size: 20px;
+  color: black;
+}
+
+.install-actions {
+  padding-right: 30px;
+  padding-left: 30px;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.btn-primary {
+  font-size: 20px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  font-size: 20px;
+  color: black;
+  background-color: white;
+  border: 1px solid black;  
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
 div {
   padding: 0;
   margin: 0;
@@ -1244,7 +1296,7 @@ html.pc dialog {
 </head>
 
 <body>
-  <pre id="savedData" data-saveid="1794347590917">PAGE stats
+  <pre id="savedData" data-saveid="1795366991153">PAGE stats
 lvl: 8
 bab: 5
 str: 11
@@ -1329,6 +1381,18 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
   Troll Shape(basestr=23/basedex=14/basecon=23/baseint=6/basewis=9/basecha=6/+5nac/hp=+30/basesize=1/-1zac),
   Polymorph Troll(basestr=23/basedex=14/basecon=23/+5nac/basesize=1/-1zac),
   True Strike(+20itch)</pre>
+
+  <div id="install-banner" class="install-banner" style="display: none;">
+    <div class="install-content">
+      <strong>Installer sur votre téléphone</strong>
+      <p id="install-text">Ajoutez cette application à votre écran d'accueil pour un accès rapide.</p>
+    </div>
+    <div class="install-actions">
+      <button id="install-btn" class="btn-primary">Installer</button>
+      <button id="dismiss-btn" class="btn-secondary">Plus tard</button>
+    </div>
+  </div>
+
   <dialog id="confirmDialog">
     <form method="dialog">
       <p id="confirmDialogMsg">Êtes vous certain d'effacer?</p>
@@ -1936,7 +2000,7 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
         TPL_VAL <span>(+2udmg)</span>
       </div>
     </div>
-    <div id="version">version: 2026-11-10_16:53:10</div>
+    <div id="version">version: 2026-11-22_12:03:10</div>
 
     <div data-vu="notTrollUnarmed" class="nfo">Critical Hit</div>
     <div data-vu="notTrollUnarmed" class="mnu">
@@ -2193,6 +2257,10 @@ boosts:Inspire Courage 3(+3mtch/+3mdmg/+3mwill_Fear_Charm),
 
 
 <script>
+function _(id) {
+  return document.getElementById(id);
+}
+
 if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
   // Check if there are query parameters on launch
   if (window.location.search) {
@@ -2218,6 +2286,67 @@ if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
     });
 
     registration.update(); // immediately checks for update also
+  });
+
+  let deferredPrompt;
+  const installBanner = _('install-banner');
+  const installBtn = _('install-btn');
+  const dismissBtn = document.getElementById('dismiss-btn');
+  const installText = _('install-text');
+
+  function installIn1Sec() {
+    setTimeout(() => installBanner.style.display = 'flex', 1000);
+  }
+
+  // Check if the app is already installed
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default mini-infobar from appearing
+    e.preventDefault();
+    // Save the event so it can be triggered later
+    deferredPrompt = e;
+
+    if (!isStandalone) {
+      installIn1Sec();
+    }
+  });
+
+  installBtn.addEventListener('pointerdown', async () => {
+    console.log('installBtn');
+    if (!deferredPrompt) {
+      return;
+    }
+
+    // Show the native install prompt
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      installBanner.style.display = 'none';
+    }
+    deferredPrompt = null;
+  });
+
+  const isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+
+  if (isIOS && !isStandalone && !isDismissed) {
+    installText.innerHTML = 'Appuyez sur l\'icône <strong>Partager</strong>' +
+      ' ci-dessous, puis sélectionnez <strong>Sur l\'écran d\'accueil</strong>.';
+    installBtn.style.display = 'none';
+    installIn1Sec();
+  }
+
+  dismissBtn.addEventListener('pointerdown', () => {
+    console.log('dismissBtn');
+    installBanner.style.display = 'none';
+  });
+
+  // Hide banner if the app gets installed
+  window.addEventListener('appinstalled', () => {
+    installBanner.style.display = 'none';
+    deferredPrompt = null;
   });
 }
 // dnd.js
@@ -2317,10 +2446,6 @@ if (!Element.prototype.checkVisibility) {
 }
 
 const D = {};
-
-function _(id) {
-  return document.getElementById(id);
-}
 
 function q(sel) {
   return document.querySelector(sel);
