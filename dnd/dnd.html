@@ -1916,7 +1916,7 @@ html.pc dialog {
         TPL_VAL <span>(+2udmg)</span>
       </div>
     </div>
-    <div id="version">version: 2026-11-22_12:09:53</div>
+    <div id="version">version: 2026-11-22_12:23:11</div>
 
     <div data-vu="notTrollUnarmed" class="nfo">Critical Hit</div>
     <div data-vu="notTrollUnarmed" class="mnu">
@@ -2211,7 +2211,7 @@ if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
   const installText = _('install-text');
 
   function installInASec() {
-    setTimeout(() => installBanner.style.display = 'flex', 3000);
+    setTimeout(() => installBanner.style.display = 'flex', 1800);
   }
 
   // Check if the app is already installed
@@ -2229,7 +2229,7 @@ if ( (location.protocol === 'https:') && ('serviceWorker' in navigator) ){
     }
   });
 
-  installBtn.addEventListener('pointerdown', async () => {
+  installBtn.addEventListener('click', async () => {
     console.log('installBtn');
     if (!deferredPrompt) {
       return;
